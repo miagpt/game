@@ -1,0 +1,12 @@
+{
+  "name": "doroga-domoy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Дорога домой — семейное приключение на HTML Canvas",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node tools/serve.mjs",
+    "test": "node --test tools/*.test.mjs && node tools/site-check.mjs"
+  }
+}
