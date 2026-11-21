@@ -1,0 +1,27 @@
+name: Tests
+on:
+  pull_request:
+  push:
+    branches: [main, arena/c971cd3c-game]
+permissions:
+  contents: read
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      - run: npm install --no-save --ignore-scripts puppeteer-core@24.31.0
+      - name: Browser end-to-end
+        run: |
+          export CHROME_PATH="$(command -v google-chrome || command -v chromium-browser || command -v chromium)"
+          npm run test:e2e
+      - run: node --check assets/js/main.js
+      - run: node tools/build-site.mjs
