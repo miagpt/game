@@ -1,29 +1,162 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f8f7ef"><meta name="description" content="Дорога домой — тёплое семейное приключение. Помоги пушистым путешественникам вернуться домой!">
-  <title>Дорога домой — семейное приключение</title>
-  <link rel="icon" href="assets/img/family/cat-face.webp"><link rel="stylesheet" href="assets/css/style.css"><link rel="stylesheet" href="assets/css/responsive.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Поршик — кот, который летает 🐈‍⬛</title>
+  <meta name="description" content="Поршик — маленькая тёплая браузерная игра: дымчатый кот летит через десять миров с рыбками, записками и письмом в конце.">
+  <meta name="theme-color" content="#fdf3e2">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="Поршик — кот, который летает">
+  <meta property="og:description" content="Десять миров, целое небо рыбок и записка после каждого перелёта.">
+  <meta property="og:image" content="assets/img/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="preload" href="assets/fonts/nunito-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/caveat-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/site.css">
 </head>
-<body>
-  <header class="topbar"><a class="brand" href="#top" aria-label="Дорога домой — наверх"><span class="brand-mark">⌂</span> дорога домой</a><nav><a href="#journey">Маршрут</a><a href="#heroes">Команда</a><a href="#progress">Прогресс</a></nav><button class="sound-toggle" id="soundToggle" aria-label="Выключить звук" title="Звук">♫</button></header>
-  <div id="birthdayBanner" class="birthday-banner" hidden role="status">🎂 С днём рождения! Сегодня миссия — самый праздничный полёт. 🐾</div>
-  <main id="top">
-    <section class="hero">
-      <div class="hero-copy"><span class="eyebrow"><i></i> маленькая игра о большом возвращении</span><h1>Все дороги<br>ведут <em>домой.</em></h1><p>Воздушный шар унёс пушистую компанию далеко от пикника. Лети через шесть уютных миров, собирай лапки и помоги всем снова устроиться на любимом диване.</p><div class="hero-actions"><button class="button button-primary" id="startAdventure">Начать приключение <span>↗</span></button><a class="quiet-link" href="#journey">Узнать маршрут <span>↓</span></a></div><div class="hero-note"><span class="note-face">🐾</span><span>Короткий полёт · добрые испытания<br>Для больших и маленьких пилотов</span></div></div>
-      <div class="hero-art"><div class="sun"></div><div class="cloud cloud-a"></div><div class="cloud cloud-b"></div><div class="bird bird-a">✦</div><div class="flight-path"></div><div class="pet-photo"><img src="assets/img/family/puppies.webp" alt="Три любопытные собаки на крыльце"><span class="photo-sticker">команда<br>на месте!</span></div><div class="cat-cutout"><img src="assets/img/family/cat-face.webp" alt="Серый кот — главный штурман"></div><div class="hero-caption">Экипаж готов.<br><b>Дом уже ждёт.</b></div><div class="hill hill-back"></div><div class="hill hill-front"></div></div>
-      <div class="hero-bottom"><span>Проведи пальцем, чтобы лететь</span><span>SCROLL TO EXPLORE&nbsp; ↓</span></div>
-    </section>
-    <section class="journey section" id="journey"><div class="section-heading"><div><span class="eyebrow">МАРШРУТ · 6 МИРов</span><h2>Шесть остановок<br>до любимого места.</h2></div><p>Каждый перелёт — маленькая история. Препятствия смешные, а запас жизней позволяет учиться и не торопиться.</p></div><div class="level-grid" id="levelGrid"></div></section>
-    <section class="game-section" id="game"><div class="game-intro"><div><span class="eyebrow">ПИЛОТСКАЯ</span><h2>Выбирай пилота.<br>И — <em>в путь.</em></h2></div><p>Одно касание — один взмах. На компьютере нажимай пробел или ↑. Можно играть с телефона, звук — по желанию.</p></div><div class="game-shell" id="gameShell"><div class="game-stage"><canvas id="gameCanvas" aria-label="Игровое поле: лети между воротами и собирай лапки"></canvas><div class="screen-layer" id="screenLayer" aria-live="polite"></div></div><div class="game-hud"><span id="hudLevel">МАРШРУТ 01 / 06</span><div class="hud-stats"><span id="hudLives">♥ ♥ ♥</span><span id="hudPaws">🐾 0</span><button id="pauseButton" aria-label="Пауза" title="Пауза">Ⅱ</button></div></div></div><div class="game-tip"><span>ПРОБЕЛ / ↑ / КАСАНИЕ — ВЗМАХ</span><span>ESC — ПАУЗА</span><span>ПРОГРЕСС СОХРАНЯЕТСЯ НА ЭТОМ УСТРОЙСТВЕ</span></div></section>
-    <section class="heroes section" id="heroes"><div class="section-heading"><div><span class="eyebrow">НАШ ЭКИПАЖ</span><h2>Пять пилотов.<br>Один общий дом.</h2></div><p>У каждого свой характер и стиль полёта. Выбирай карточку перед стартом — или лети первым, кто готов.</p></div><div class="hero-cards" id="heroCards"></div><p class="privacy-note">Фотоальбом сделан из фотографий, которые приложены к проекту. Имена и способности персонажей можно настроить в конфиге игры.</p></section>
-    <section class="progress-section section" id="progress"><div class="section-heading"><div><span class="eyebrow">СЕМЕЙНЫЙ ЖУРНАЛ</span><h2>Каждый полёт<br>оставляет след.</h2></div><p>Зарабатывай лапки, открывай наряды и дополнительные карточки пилотов. Прогресс хранится только в этом браузере.</p></div><div class="wallet-bar"><span>ТВОЙ КОШЕЛЁК</span><strong id="walletPaws">🐾 0 лапок</strong><button class="quiet-link" id="resetSave" type="button">Сбросить прогресс</button></div><div class="progress-columns"><div><h3 class="subheading">Миссии экипажа</h3><div id="missionList" class="mission-list"></div></div><div><h3 class="subheading">Гардероб пилотов</h3><p class="closet-hint">Наряды косметические: выбери пилота в игровом меню, чтобы надеть купленное.</p><div id="outfitList" class="outfit-list"></div></div></div></section>
-    <section class="notes-section section" id="notes"><div class="section-heading"><div><span class="eyebrow">БОРТОВОЙ ДНЕВНИК</span><h2>Записки с маршрута.</h2></div><p>Короткие заметки открываются после завершения каждой главы. Последнее письмо ждёт после возвращения домой.</p></div><div id="notesList" class="notes-list"></div><article id="finalLetterCard" class="final-letter-card" hidden><span class="eyebrow">ПОСЛЕДНЕЕ ПИСЬМО</span><h3>Дорогая команда,</h3><p id="finalLetterText"></p><span id="finalLetterSignature" class="letter-sign"></span></article></section>
-    <section class="album-section" id="album"><div class="section-heading album-heading"><div><span class="eyebrow">МЕЖДУ ПОЛЁТАМИ</span><h2>Домашние хроники.</h2></div><p>Лучшие экспедиции начинаются с обычного дня.</p></div><div class="photo-grid"><figure class="photo-photo photo-one"><img src="assets/img/family/cat-tree.webp" loading="lazy" alt="Кот отдыхает у ёлки"><figcaption>Главный инспектор украшений</figcaption></figure><figure class="photo-photo photo-two"><img src="assets/img/family/cat-bag.webp" loading="lazy" alt="Кот исследует пакет"><figcaption>Тайный отсек для пилота</figcaption></figure><figure class="photo-photo photo-three"><img src="assets/img/family/archi-puppy.webp" loading="lazy" alt="Две собаки вместе"><figcaption>Проверка команды перед вылетом</figcaption></figure><figure class="photo-photo photo-four"><img src="assets/img/family/cat-cushion.webp" loading="lazy" alt="Кот на мягкой подушке"><figcaption>Самое надёжное место посадки</figcaption></figure><figure class="photo-photo photo-five"><img src="assets/img/family/puppies-close.webp" loading="lazy" alt="Щенки смотрят в объектив"><figcaption>Экипаж наблюдает за погодой</figcaption></figure></div></section>
-    <section class="letter"><div class="letter-mark">✳</div><span class="eyebrow">ПОСЛЕ ПОСЛЕДНЕГО УРОВНЯ</span><h2>Самое лучшее<br>место на свете — <em>дома.</em></h2><p>«Спасибо, что летели за нами. Мы снова вместе — а теперь можно и поспать».</p><span class="letter-sign">— вся команда 🐾</span><button class="button button-cream" id="letterPlay">Отправиться домой <span>↗</span></button></section>
-  </main>
-  <footer><a class="brand" href="#top"><span class="brand-mark">⌂</span> дорога домой</a><span>Сделано с любовью, лапками и одной очень важной целью.</span><a href="#top">Наверх ↑</a></footer>
-  <script type="module" src="assets/js/main.js"></script>
+<body class="site">
+<a class="skip-link" href="#main">К содержанию</a>
+
+<header class="topbar">
+  <a class="brand" href="./index.html" aria-label="Поршик — на главную">
+    <span class="brand-mark" aria-hidden="true">🐈‍⬛</span>
+    <span>Поршик</span>
+  </a>
+  <nav class="topnav" aria-label="Разделы">
+    <a href="#worlds">Миры</a>
+    <a href="#how">Как играть</a>
+    <a href="#diary">Дневник</a>
+    <a href="love.html">Записки</a>
+  </nav>
+  <a class="btn btn--big btn--small" href="play.html">Играть <span aria-hidden="true">↗</span></a>
+</header>
+
+<main id="main">
+  <section class="hero">
+    <div class="hero-copy">
+      <p class="eyebrow">маленькая летательная история</p>
+      <h1>Небо.<br>Рыбки.<br><em>Дом.</em></h1>
+      <p class="lead">
+        Поршик — дымчатый кот с большим сердцем и очень решительными усами.
+        Однажды он посмотрел на голубей, потом на свои лапы — и полетел через
+        десять миров к единственному окну, где его ждут.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn--big" href="play.html">Начать полёт <span aria-hidden="true">→</span></a>
+        <a class="btn btn--ghost" href="love.html">Читать записки</a>
+      </div>
+      <ul class="hero-facts">
+        <li><b>10</b> миров</li>
+        <li><b>9</b> записок</li>
+        <li><b>8</b> обликов</li>
+        <li><b>9</b> миссий</li>
+        <li><b>0</b> рекламы</li>
+      </ul>
+    </div>
+    <figure class="hero-art">
+      <img class="hero-photo" src="assets/img/hero.jpg" width="960" height="504" alt="Поршик — дымчатый серый кот с зелёными глазами, летит над вечерними крышами">
+      <span class="art-sticker">мяу!<br>это я</span>
+    </figure>
+  </section>
+
+  <section class="section" id="worlds">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">маршрут · 10 миров</p>
+        <h2>Десять остановок<br>до одного окна.</h2>
+      </div>
+      <p class="section-note">Каждый мир — короткий перелёт на две-три минуты. Препятствия добрые, рыбки остаются в кошельке даже после неудачного залёта, а сложность растёт постепенно.</p>
+    </div>
+    <ol class="world-grid" id="worldGrid"></ol>
+  </section>
+
+  <section class="section section--split" id="how">
+    <div>
+      <p class="eyebrow">как играть</p>
+      <h2>Один тап —<br>один взмах.</h2>
+      <p class="section-note">На компьютере: пробел, ↑ или W. На телефоне: тап по небу. Esc или кнопка Ⅱ — пауза. Звук и музыка выключаются отдельно.</p>
+      <ul class="rules">
+        <li><span aria-hidden="true">🐟</span><div><b>Рыбки</b> — валюта и настроение. Рыбка в каждом просвете, дорожка между воротами и бонусы: сосиски, булочки, золотые мышки.</div></li>
+        <li><span aria-hidden="true">❤️</span><div><b>Три жизни</b> на полёт. Пузырь, магнит и энергия помогают, но лапы всё равно главные.</div></li>
+        <li><span aria-hidden="true">⭐</span><div><b>Три звезды</b> за мир: пройти, собрать 65% рыбок и не потерять ни одной жизни.</div></li>
+        <li><span aria-hidden="true">✉️</span><div><b>Записка</b> после каждого мира и финальное письмо после десятого.</div></li>
+      </ul>
+    </div>
+    <div class="how-card">
+      <div class="how-visual" aria-hidden="true">
+        <div class="gate gate--top"></div>
+        <div class="gate gate--bottom"></div>
+        <div class="how-pie">🐟</div>
+        <div class="how-bird">🐈‍⬛</div>
+        <div class="how-heart">❤️❤️❤️</div>
+      </div>
+      <p class="how-caption">Игра не строит непроходимых ворот: симуляцию каждый раз проверяет бот в тестах.</p>
+    </div>
+  </section>
+
+  <section class="section" id="diary">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">дневник</p>
+        <h2>Что Поршик<br>рассказывает потом.</h2>
+      </div>
+      <p class="section-note">Записки открываются по мере прохождения и складываются на отдельной странице. Прогресс живёт только в этом браузере — без аккаунтов, сети и таблиц лидеров.</p>
+    </div>
+    <div class="diary-grid">
+      <article class="diary-card">
+        <span class="diary-ico" aria-hidden="true">📖</span>
+        <h3>Записки с маршрута</h3>
+        <p>Девять коротких писем — по одному после каждого мира, кроме финала. Их можно перечитывать в любой момент.</p>
+        <a class="quiet-link" href="love.html">Открыть дневник <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="diary-card">
+        <span class="diary-ico" aria-hidden="true">🎁</span>
+        <h3>Миссии и гардероб</h3>
+        <p>Восемь обликов, девять миссий и звёзды за каждый мир. Облики покупаются за рыбки, часть открывается за миссии.</p>
+        <a class="quiet-link" href="play.html">В гардероб <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="diary-card">
+        <span class="diary-ico" aria-hidden="true">🌙</span>
+        <h3>Бесконечная ночь</h3>
+        <p>После первого финала открывается бесконечный полёт: миры сменяют друг друга, скорость растёт, а рекорд хочется побить ещё раз.</p>
+        <a class="quiet-link" href="play.html">Попробовать <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="diary-card">
+        <span class="diary-ico" aria-hidden="true">💛</span>
+        <h3>Письмо в конце</h3>
+        <p>После десятого мира Поршик наконец садится на подоконник и достаёт из-за уха письмо.</p>
+        <a class="quiet-link" href="love.html#letter">Прочитать <span aria-hidden="true">→</span></a>
+      </article>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="cta-inner">
+      <p class="eyebrow">пора</p>
+      <h2>Лапы уже<br>работают.</h2>
+      <p>Поршик ждёт на подоконнике. Рыбки — в сумке. Окно открыто.</p>
+      <a class="btn btn--big" href="play.html">Полетели! <span aria-hidden="true">↗</span></a>
+    </div>
+    <div class="cta-bird" aria-hidden="true">🐈‍⬛</div>
+  </section>
+</main>
+
+<footer class="footer">
+  <a class="brand" href="./index.html"><span class="brand-mark" aria-hidden="true">🐈‍⬛</span> <span>Поршик</span></a>
+  <p>Сделано с любовью, усами и одной очень важной рыбкой.
+  <nav aria-label="Подвал">
+    <a href="play.html">Играть</a>
+    <a href="love.html">Записки</a>
+    <a href="family/">Семейная игра</a>
+  </nav>
+</footer>
+
+<script type="module" src="assets/js/site.js"></script>
 </body>
 </html>

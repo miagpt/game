@@ -2,7 +2,7 @@ name: Tests
 on:
   pull_request:
   push:
-    branches: [main, arena/c971cd3c-game]
+    branches: [main]
 permissions:
   contents: read
 concurrency:
@@ -11,17 +11,17 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - run: npm test
-      - run: npm install --no-save --ignore-scripts puppeteer-core@24.31.0
-      - name: Browser end-to-end
+      - name: Syntax check
+        run: for f in assets/js/*.js tools/*.mjs; do node --check "$f"; done
+      - name: Browser-free end-to-end
         run: |
-          export CHROME_PATH="$(command -v google-chrome || command -v chromium-browser || command -v chromium)"
+          npm install --no-save jsdom@26.1.0 esbuild@0.25.0
           npm run test:e2e
-      - run: node --check assets/js/main.js
-      - run: node tools/build-site.mjs
+      - run: npm run build

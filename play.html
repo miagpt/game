@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <title>Играть · Поршик — кот, который летает</title>
+  <meta name="description" content="Поршик — дымчатый кот, который научился летать: десять миров, рыбки, записки и письмо. Тёплая браузерная игра.">
+  <meta name="theme-color" content="#3b2a4a">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:title" content="Поршик — воздушный повар">
+  <meta property="og:description" content="Десять миров, целое небо рыбок и записка после каждого перелёта.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Поршик">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="preload" href="assets/fonts/nunito-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/caveat-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/game.css">
+</head>
+<body class="game-body">
+
+<svg class="visually-hidden" aria-hidden="true" focusable="false">
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></symbol>
+  <symbol id="i-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></symbol>
+  <symbol id="i-music" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></symbol>
+  <symbol id="i-fish" viewBox="0 0 24 24"><path d="M2.6 12c2.3-3.6 5.5-5.4 9.4-5.4 3.3 0 6.1 1.5 8.4 4.4.3.4.3.9 0 1.3l-.9 1.2 1 1.3c.2.3.2.7 0 1-.2.2-.5.2-.8.1l-2.5-1.2c-1.4 1.2-3 2-4.9 2.2-4.2.4-7.7-1.4-9.7-4.9zm6.4-3a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2z"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15.4 7.4 14 6l-6 6 6 6 1.4-1.4L10.8 12z"/></symbol>
+</svg>
+
+<div class="game-frame" id="game">
+  <header class="game-top">
+    <a class="brand-mini" href="./index.html" aria-label="Поршик — на главную">
+      <span class="brand-bird" aria-hidden="true">🐈‍⬛</span>
+      <span>Поршик</span>
+    </a>
+    <div class="hud" id="hud">
+      <div class="hud-chip" id="hudLives" title="Жизни">
+        <svg class="ic ic-heart"><use href="#i-heart"/></svg><b id="hudLivesText">3</b>
+      </div>
+      <div class="hud-chip" id="hudFishChip" title="Рыбки">
+        <svg class="ic ic-fish"><use href="#i-fish"/></svg><b id="hudFish">0</b>
+      </div>
+      <div class="hud-chip hud-chip--ghost" id="hudTrack">Мир 1/10</div>
+      <div class="hud-chip hud-chip--ghost" id="hudStars">☆☆☆</div>
+    </div>
+    <div class="game-actions">
+      <button class="iconbtn" id="btnMute" type="button" aria-pressed="false" aria-label="Выключить звук">
+        <svg class="ic"><use href="#i-sound"/></svg>
+      </button>
+      <button class="iconbtn" id="btnPause" type="button" aria-label="Пауза">
+        <svg class="ic"><use href="#i-pause"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="stage" id="stage">
+    <canvas id="canvas" aria-label="Игровое поле: лети между воротами и собирай рыбок"></canvas>
+    <div class="powers" id="powers" aria-live="off"></div>
+    <div class="bubble" id="bubble" hidden>
+      <span class="bubble-bird" aria-hidden="true">🐈‍⬛</span>
+      <span id="bubbleText"></span>
+    </div>
+    <div class="toast" id="toast" hidden role="status"></div>
+
+    <!-- Меню -->
+    <section class="panel panel--menu" id="screenMenu" hidden>
+      <div class="panel-card">
+        <p class="eyebrow" id="introEyebrow">МИР 1 ИЗ 10</p>
+        <h1 class="panel-title" id="introName">Крыша у форточки</h1>
+        <p class="panel-story" id="introStory"></p>
+        <p class="panel-tip" id="introTip"></p>
+        <div class="menu-row">
+          <button class="btn btn--big" id="btnPlay" type="button">Полетели! <span aria-hidden="true">↗</span></button>
+          <button class="btn btn--ghost" id="btnLevels" type="button">Миры</button>
+          <button class="btn btn--ghost" id="btnWardrobe" type="button">Гардероб</button>
+          <button class="btn btn--ghost" id="btnMissions" type="button">Миссии <span class="badge" id="missionBadge" hidden>0</span></button>
+          <button class="btn btn--gold" id="btnEndless" type="button">Бесконечный полёт</button>
+        </div>
+        <p class="menu-foot"><b id="walletFish">0</b> рыбок · рекорд бесконечного: <b id="menuBest">0</b></p>
+        <p class="menu-daily" id="menuDaily" hidden><span aria-hidden="true">🎁</span> <span id="menuDailyText"></span></p>
+      </div>
+    </section>
+
+    <!-- Выбор мира -->
+    <section class="panel" id="screenLevels" hidden>
+      <div class="panel-card panel-card--wide">
+        <header class="panel-head">
+          <button class="iconbtn" type="button" data-go="menu" aria-label="Назад"><svg class="ic"><use href="#i-back"/></svg></button>
+          <h2 class="panel-title panel-title--sm">Миры</h2>
+          <span class="panel-count" id="starTotal"></span>
+        </header>
+        <div class="level-list" id="levelList"></div>
+      </div>
+    </section>
+
+    <!-- Гардероб -->
+    <section class="panel" id="screenWardrobe" hidden>
+      <div class="panel-card panel-card--wide">
+        <header class="panel-head">
+          <button class="iconbtn" type="button" data-go="menu" aria-label="Назад"><svg class="ic"><use href="#i-back"/></svg></button>
+          <h2 class="panel-title panel-title--sm">Гардероб Поршика</h2>
+          <span class="panel-count" id="wardrobeFish"></span>
+        </header>
+        <p class="panel-tip">Облики покупаются за рыбок и ничего не меняют в полёте. Рыбки копятся даже в неудачных залётах.</p>
+        <div class="skin-list" id="skinList"></div>
+        <p class="panel-note">Выбери облик — он сразу наденется и останется выбранным.</p>
+      </div>
+    </section>
+
+    <!-- Миссии -->
+    <section class="panel" id="screenMissions" hidden>
+      <div class="panel-card panel-card--wide">
+        <header class="panel-head">
+          <button class="iconbtn" type="button" data-go="menu" aria-label="Назад"><svg class="ic"><use href="#i-back"/></svg></button>
+          <h2 class="panel-title panel-title--sm">Миссии</h2>
+          <span class="panel-count" id="missionCount"></span>
+        </header>
+        <p class="panel-tip">Выполняй миссии — за них открываются наряды и пузырь на старт. Прогресс считается сам, забирать награды не нужно.</p>
+        <div class="mission-list" id="missionList"></div>
+      </div>
+    </section>
+
+    <!-- Пауза -->
+    <section class="panel" id="screenPause" hidden>
+      <div class="panel-card">
+        <h2 class="panel-title panel-title--sm">Пауза</h2>
+        <p class="panel-story">Поршик завис в воздухе и считает рыбок.</p>
+        <div class="toggle-row">
+          <button class="toggle" id="tglSound" type="button" aria-pressed="true">Звуки</button>
+          <button class="toggle" id="tglMusic" type="button" aria-pressed="true">Музыка</button>
+        </div>
+        <div class="menu-row">
+          <button class="btn" id="btnResume" type="button">Продолжить</button>
+          <button class="btn btn--ghost" id="btnRestart" type="button">Заново</button>
+          <button class="btn btn--ghost" type="button" data-go="menu">В меню</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Победа -->
+    <section class="panel" id="screenWin" hidden>
+      <div class="panel-card">
+        <p class="eyebrow" id="winEyebrow">МИР ПРОЙДЕН</p>
+        <h2 class="panel-title" id="winTitle">Мяу!</h2>
+        <div class="stars-big" id="winStars"></div>
+        <p class="panel-story" id="winText"></p>
+        <p class="panel-reward" id="winReward"></p>
+        <div class="menu-row">
+          <button class="btn btn--big" id="btnWinNext" type="button">Дальше <span aria-hidden="true">→</span></button>
+          <button class="btn btn--gold" id="btnNote" type="button">Открыть записку</button>
+          <button class="btn btn--ghost" id="btnWinRetry" type="button">Ещё раз на три звезды</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Проигрыш -->
+    <section class="panel" id="screenLose" hidden>
+      <div class="panel-card">
+        <h2 class="panel-title" id="loseTitle">Ой. Крошки!</h2>
+        <p class="panel-story" id="loseText"></p>
+        <div class="lose-bar"><span id="loseProgressText">Пройдено 0%</span><b id="loseGain">+0 в кошелёк</b></div>
+        <div class="menu-row">
+          <button class="btn" id="btnRetry" type="button">Ещё раз</button>
+          <button class="btn btn--ghost" type="button" data-go="menu">В меню</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Записка -->
+    <section class="panel panel--note" id="screenNote" hidden>
+      <article class="note-card">
+        <header class="note-head">
+          <span class="note-stamp">🐾</span>
+          <div>
+            <p class="eyebrow" id="noteHead">Первое донесение</p>
+            <h2 class="note-title" id="noteTitle">Я умею летать</h2>
+          </div>
+        </header>
+        <p class="note-text" id="noteText"></p>
+        <p class="note-sign" id="noteSign">— Поршик</p>
+        <div class="note-actions" id="noteActions">
+          <button class="btn btn--big" id="btnNoteNext" type="button">Дальше</button>
+          <a class="btn btn--ghost" id="btnAllNotes" href="love.html">Все записки</a>
+        </div>
+      </article>
+    </section>
+
+    <!-- Финал: письмо -->
+    <section class="panel panel--letter" id="screenLetter" hidden>
+      <article class="letter-card">
+        <p class="eyebrow">ФИНАЛЬНОЕ ПИСЬМО</p>
+        <h2 class="letter-title" id="letterTitle">Письмо с полными лапами</h2>
+        <p class="letter-hi" id="letterHi"></p>
+        <div class="letter-body" id="letterBody"></div>
+        <p class="letter-sign" id="letterSign"></p>
+        <div class="menu-row">
+          <button class="btn btn--big" id="btnLetterDone" type="button">Домой</button>
+          <button class="btn btn--ghost" type="button" data-go="menu">Ещё полетать</button>
+        </div>
+      </article>
+    </section>
+  </div>
+
+  <footer class="game-hint">
+    <span id="hintText">Тап, клик или пробел — взмах</span>
+    <span class="hide-sm">Esc — пауза</span>
+    <span class="hide-sm"><a href="love.html">Записки</a> · <a href="index.html">О игре</a></span>
+  </footer>
+</div>
+
+<script type="module" src="assets/js/game.js"></script>
+</body>
+</html>
