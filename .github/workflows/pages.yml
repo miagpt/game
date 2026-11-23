@@ -1,7 +1,7 @@
-name: Publish family game to GitHub Pages
+name: Publish Поршик to GitHub Pages
 on:
   push:
-    branches: [main, arena/c971cd3c-game]
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -19,12 +19,11 @@ jobs:
         with:
           node-version: 22
       - run: npm test
-      - run: npm install --no-save --ignore-scripts puppeteer-core@24.31.0
-      - name: Browser end-to-end
+      - name: Browser-free end-to-end
         run: |
-          export CHROME_PATH="$(command -v google-chrome || command -v chromium-browser || command -v chromium)"
+          npm install --no-save jsdom@26.1.0 esbuild@0.25.0
           npm run test:e2e
-      - run: node tools/build-site.mjs
+      - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
