@@ -273,3 +273,55 @@ button {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------------- подарок версии 2.0 (общий для игры и дневника) ---------------- */
+
+.gift-card {
+  margin: 22px auto 4px;
+  max-width: 46ch;
+  padding: 18px 20px 20px;
+  border-radius: 18px;
+  text-align: center;
+  background: linear-gradient(150deg, #ffe9cf, #ffd8cd 62%, #f9c9d8);
+  box-shadow: 0 20px 40px -28px rgba(140, 60, 40, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+.gift-badge {
+  display: inline-block;
+  margin: 0;
+  padding: 2px 12px;
+  border-radius: 999px;
+  background: rgba(122, 44, 34, 0.9);
+  color: #ffe9cf;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.gift-title {
+  margin: 8px 0 2px;
+  font-size: 1.32rem;
+  color: #5c2a24;
+}
+.gift-sub {
+  margin: 0 0 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #8a4a3c;
+}
+.gift-lines {
+  display: grid;
+  gap: 7px;
+  text-align: left;
+}
+.gift-lines p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: #5a352e;
+}
+.gift-sign {
+  margin: 12px 0 0;
+  font-family: var(--hand, 'Caveat', cursive);
+  font-size: 1.25rem;
+  color: #7a3327;
+}

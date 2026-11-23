@@ -361,7 +361,7 @@ body.site {
   font-size: 1.7rem;
   animation: float 4s ease-in-out infinite;
 }
-.how-bird {
+.how-cat {
   position: absolute;
   left: 20%;
   top: 42%;
@@ -452,7 +452,7 @@ body.site {
   color: #5a3a2c;
   margin-bottom: 18px;
 }
-.cta-bird {
+.cta-cat {
   font-size: clamp(4rem, 12vw, 8rem);
   margin-left: auto;
   animation: float 5s ease-in-out infinite;
@@ -639,7 +639,7 @@ body.site {
     flex-direction: column;
     align-items: flex-start;
   }
-  .cta-bird {
+  .cta-cat {
     margin: -10px 0 0 auto;
   }
 }
@@ -676,5 +676,127 @@ body.site {
   }
   .note-item p {
     font-size: 1.2rem;
+  }
+}
+
+/* ---------------- версия 2.0, подарок, значки ---------------- */
+
+.brand-ver {
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--sun);
+  color: #4a2a10;
+  font-family: var(--font);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+  align-self: center;
+}
+
+.hero-gift {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 6px 18px;
+  margin-top: 14px;
+  padding: 18px clamp(16px, 3vw, 28px);
+  border-radius: 24px;
+  background: linear-gradient(135deg, #ffe6c9, #ffd3c5 58%, #f8c4d7);
+  box-shadow: 0 30px 60px -44px rgba(150, 70, 50, 0.9), inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+.hero-gift-badge {
+  grid-row: 1 / span 2;
+  margin: 0;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(110, 40, 32, 0.9);
+  color: #ffe9cf;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  writing-mode: horizontal-tb;
+  align-self: start;
+}
+.hero-gift h2 {
+  margin: 0;
+  font-size: clamp(1.3rem, 2.6vw, 1.7rem);
+  color: #5c2a24;
+}
+.hero-gift p {
+  grid-column: 2;
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6a3a30;
+}
+.hero-gift-actions {
+  grid-row: 1 / span 2;
+  grid-column: 3;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.hero-gift .btn--big {
+  padding: 10px 18px;
+}
+
+.footer-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+.footer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(51, 37, 60, 0.05);
+  color: var(--ink-soft);
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+.footer-badge img {
+  display: block;
+  opacity: 0.85;
+}
+.footer-badge:hover {
+  background: rgba(51, 37, 60, 0.09);
+  color: var(--ink);
+}
+.footer-badge--ai {
+  background: rgba(242, 96, 58, 0.12);
+  color: #b53f22;
+}
+.footer-badge--ai:hover {
+  background: rgba(242, 96, 58, 0.2);
+  color: #8f2f18;
+}
+
+@media (max-width: 780px) {
+  .hero-gift {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .hero-gift-badge {
+    grid-row: auto;
+    justify-self: start;
+  }
+  .hero-gift p,
+  .hero-gift-actions {
+    grid-column: 1;
+    grid-row: auto;
+    justify-content: flex-start;
+  }
+  .footer-badges {
+    margin-left: 0;
+    width: 100%;
   }
 }

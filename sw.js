@@ -2,16 +2,18 @@
    Стратегия: сначала сеть, при неудаче — кэш. Версия кэша
    поднимается вручную при изменении файлов. */
 
-const VERSION = 'porshik-v2';
+const VERSION = 'porshik-v4';
 const ASSETS = [
   './',
   './index.html',
   './play.html',
   './love.html',
+  './covers.html',
   './404.html',
   './assets/css/base.css',
   './assets/css/site.css',
   './assets/css/game.css',
+  './assets/css/covers.css',
   './assets/js/content.js',
   './assets/js/rules.js',
   './assets/js/sim.js',
@@ -21,6 +23,7 @@ const ASSETS = [
   './assets/js/game.js',
   './assets/js/site.js',
   './assets/js/love.js',
+  './assets/js/covers-page.js',
   './assets/fonts/nunito-cyrillic-wght-normal.woff2',
   './assets/fonts/nunito-latin-wght-normal.woff2',
   './assets/fonts/caveat-cyrillic-wght-normal.woff2',
@@ -28,6 +31,9 @@ const ASSETS = [
   './assets/img/favicon.svg',
   './assets/img/icon-192.png',
   './assets/img/hero.jpg',
+  './assets/img/og-cover.jpg',
+  './assets/img/brands/mangpt.svg',
+  './assets/covers/01-sunset.jpg',
 ];
 
 self.addEventListener('install', (event) => {

@@ -10,7 +10,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [];
 const warn = [];
 
-const PAGES = ['index.html', 'play.html', 'love.html', '404.html'];
+const PAGES = ['index.html', 'play.html', 'love.html', 'covers.html', '404.html'];
 
 async function exists(p) {
   try {
@@ -49,7 +49,8 @@ for (const [page, text] of Object.entries(html)) {
       continue;
     }
     if (/^(?:https?:|data:|mailto:|tel:|javascript:)/i.test(ref)) {
-      if (!/^https:\/\/(?:miagpt\.github\.io)/.test(ref)) errors.push(`${page}: внешняя ссылка ${ref}`);
+      const allowed = /^https:\/\/(?:miagpt\.github\.io|github\.com\/miagpt)/;
+      if (!allowed.test(ref)) errors.push(`${page}: внешняя ссылка ${ref}`);
       continue;
     }
     const clean = ref.split(/[?#]/)[0];
@@ -108,9 +109,14 @@ const requiredIds = {
     'powers',
     'toast',
     'bubble',
+    'giftCard',
+    'giftLines',
+    'giftSign',
+    'menuGift',
   ],
   'index.html': ['main', 'worlds', 'worldGrid', 'how', 'diary'],
-  'love.html': ['main', 'noteWrap', 'letter', 'letterBlock', 'letterBody', 'progressStrip'],
+  'love.html': ['main', 'noteWrap', 'letter', 'letterBlock', 'letterBody', 'progressStrip', 'giftCard', 'giftLines'],
+  'covers.html': ['main', 'coverGrid', 'msgGrid', 'gallery', 'texts'],
   '404.html': ['main'],
 };
 
@@ -135,7 +141,7 @@ for (const file of modules.filter((f) => f.endsWith('.js'))) {
 
 /* ---------- styles ---------- */
 
-for (const css of ['base.css', 'site.css', 'game.css']) {
+for (const css of ['base.css', 'site.css', 'game.css', 'covers.css']) {
   const src = await readFile(path.join(root, 'assets/css', css), 'utf8');
   if ((src.match(/{/g) || []).length !== (src.match(/}/g) || []).length) errors.push(`assets/css/${css}: несбалансированные скобки`);
   for (const m of src.matchAll(/url\('([^']+)'\)/g)) {
@@ -182,20 +188,66 @@ for (const level of content.LEVELS) {
   if (!html['index.html'].includes('worldGrid')) errors.push('index.html не строит сетку миров');
 }
 
+/* ---------- обложки и значки платформ ---------- */
+
+const coverDir = path.join(root, 'assets/covers');
+const coverFiles = (await readdir(coverDir)).filter((f) => f.endsWith('.jpg'));
+if (coverFiles.length < 10) errors.push(`assets/covers: найдено ${coverFiles.length} обложек, ожидается 10`);
+
+const COVER_VARIANTS = [
+  '01-sunset', '02-night', '03-fishrain', '04-cosmo', '05-stainedglass',
+  '06-bakery', '07-fireplace', '08-papercut', '09-neon', '10-home',
+];
+const coversPage = html['covers.html'] || '';
+for (const variant of COVER_VARIANTS) {
+  for (const dir of ['assets/covers', 'assets/covers/full']) {
+    if (!(await exists(path.join(root, dir, `${variant}.jpg`)))) errors.push(`нет обложки ${dir}/${variant}.jpg`);
+  }
+  if (!coversPage.includes('id="coverGrid"')) errors.push('covers.html: нет контейнера галереи');
+}
+
+const coversJs = await readFile(path.join(root, 'assets/js/covers-page.js'), 'utf8');
+const listed = [...coversJs.matchAll(/file: '([0-9]{2}-[a-z]+)'/g)].map((m) => m[1]);
+if (new Set(listed).size !== COVER_VARIANTS.length) errors.push(`covers-page.js: ${new Set(listed).size} вариантов вместо 10`);
+for (const variant of COVER_VARIANTS) {
+  if (!listed.includes(variant)) errors.push(`covers-page.js: потерян вариант ${variant}`);
+}
+if ((coversJs.match(/who: '/g) || []).length < 8) errors.push('covers-page.js: мало текстов для Telegram');
+
+for (const badge of ['appstore', 'googleplay', 'github', 'mangpt']) {
+  const file = path.join(root, 'assets/img/brands', `${badge}.svg`);
+  if (!(await exists(file))) errors.push(`нет значка assets/img/brands/${badge}.svg`);
+  else {
+    const svg = await readFile(file, 'utf8');
+    if (!/<svg[^>]*viewBox="0 0 24 24"/.test(svg)) errors.push(`assets/img/brands/${badge}.svg: нужен viewBox 24×24`);
+    if (/https?:\/\/(?!www\.w3\.org)/.test(svg)) errors.push(`assets/img/brands/${badge}.svg: внешняя ссылка`);
+  }
+}
+if (!coversPage.includes('mangpt.svg')) errors.push('covers.html: нет значка MangPT');
+
+/* версия 2.0 должна быть видна на всех «входных» страницах */
+for (const page of ['index.html', 'play.html', 'love.html', 'covers.html']) {
+  if (!/2\.0/.test(html[page] || '')) errors.push(`${page}: нет отметки версии 2.0`);
+}
+if (!/Special gift for Egor and Liza/.test(html['index.html'] || '')) errors.push('index.html: нет надписи подарка');
+
 /* ---------- вес страниц ---------- */
 
 let total = 0;
 async function walk(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {
-    if (['node_modules', '.git', 'family', 'dist', '.harness'].includes(entry.name)) continue;
+    if (['node_modules', '.git', 'family', 'dist', '.harness', '.covers-src', '.covers-fonts'].includes(entry.name)) continue;
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) await walk(full);
     else total += (await stat(full)).size;
   }
 }
 await walk(path.join(root, 'assets'));
-if (total > 4_000_000) warn.push(`assets весит ${(total / 1e6).toFixed(1)} МБ — многовато для первого кадра`);
-for (const big of ['assets/img/og.jpg', 'assets/img/hero.jpg']) {
+let coverBytes = 0;
+for (const file of coverFiles) coverBytes += (await stat(path.join(coverDir, file))).size;
+if (coverBytes > 2_600_000) warn.push(`обложки весят ${(coverBytes / 1e6).toFixed(1)} МБ`);
+if (total > 8_000_000) warn.push(`assets весит ${(total / 1e6).toFixed(1)} МБ — многовато для первого кадра`);
+for (const big of ['assets/img/og.jpg', 'assets/img/hero.jpg', 'assets/img/og-cover.jpg']) {
   const s = await stat(path.join(root, big));
   if (s.size > 400_000) warn.push(`${big}: ${Math.round(s.size / 1024)} КБ`);
 }

@@ -3,3 +3,8 @@ dist/
 playwright-report/
 .harness/
 .harness-frames/
+
+# исходный арт обложек и шрифты для сборки — вне репозитория
+.covers-src/
+.covers-fonts/
+assets/covers/src/

@@ -186,7 +186,7 @@ for (let i = 0; i < 260; i++) {
   if (i % 12 === 0) api.sim.flap();
   frames(1);
 }
-check(api.sim.bird.y >= 0 && api.sim.bird.y <= 720, 'кот улетел за пределы мира');
+check(api.sim.cat.y >= 0 && api.sim.cat.y <= 720, 'кот улетел за пределы мира');
 check(api.sim.dist > 0, 'мир не прокручивается');
 
 // Пауза и продолжение
@@ -231,7 +231,7 @@ check(api.mode === 'playing', 'повторный запуск полёта не
 const s1 = api.sim;
 check(api.mode === 'playing', 'нет активного полёта перед проверкой победы');
 s1.status = 'playing';
-s1.bird.y = 320;
+s1.cat.y = 320;
 // финиш появляется только после всех ворот: догоняем генерацию мира
 for (let i = 0; i < 60 && s1.finishX == null; i++) {
   s1.spawned = s1.totalGates;
@@ -239,8 +239,8 @@ for (let i = 0; i < 60 && s1.finishX == null; i++) {
   frames(1);
 }
 check(s1.finishX != null, 'финиш так и не появился');
-s1.dist = Math.max(0, s1.finishX - s1.birdX - 6);
-s1.bird.y = 320;
+s1.dist = Math.max(0, s1.finishX - s1.catX - 6);
+s1.cat.y = 320;
 frames(3);
 check(api.mode === 'win', `после финиша mode=${api.mode}`);
 check(!doc.getElementById('screenWin').hidden, 'экран победы не показан');
@@ -263,14 +263,14 @@ frames(3);
 const s10 = api.sim;
 check(s10.levelId === 10, 'десятый мир не запустился');
 s10.status = 'playing';
-s10.bird.y = 320;
+s10.cat.y = 320;
 for (let i = 0; i < 60 && s10.finishX == null; i++) {
   s10.spawned = s10.totalGates;
   s10.fill();
   frames(1);
 }
-s10.dist = Math.max(0, s10.finishX - s10.birdX - 6);
-s10.bird.y = 320;
+s10.dist = Math.max(0, s10.finishX - s10.catX - 6);
+s10.cat.y = 320;
 frames(3);
 check(api.mode === 'win', `после финиша десятого мира mode=${api.mode}`);
 check(api.save.stars[9] > 0, 'звезда за десятый мир не выставлена');
@@ -279,6 +279,12 @@ frames(1);
 check(api.mode === 'letter', 'письмо не открылось');
 check((doc.getElementById('letterBody').textContent || '').length > 100, 'письмо пустое');
 check(/Поршик/.test(doc.getElementById('letterSign').textContent || ''), 'в письме нет подписи Поршика');
+check(/Егору и Лизе/.test(doc.getElementById('giftTitle').textContent || ''), 'в письме нет подарка Егору и Лизе');
+check(/Special gift/.test(doc.getElementById('giftBadge').textContent || ''), 'у подарка нет бейджа Special gift');
+check(doc.querySelectorAll('#giftLines p').length >= 2, 'текст подарка не заполнен');
+check(/для двоих/.test(doc.getElementById('giftSub').textContent || ''), 'нет подписи «для двоих»');
+check(/2\.0/.test(doc.querySelector('.brand-ver').textContent || ''), 'в шапке нет версии 2.0');
+check(/Egor and Liza/.test(doc.getElementById('menuGift').textContent || ''), 'в меню нет строки подарка');
 // Письмо → меню
 doc.getElementById('btnLetterDone').click();
 frames(2);
@@ -301,8 +307,8 @@ check(sim.gates.length > 2, 'в бесконечном режиме не поя�
 // Завершаем бесконечный забег
 for (let i = 0; i < 4; i++) {
   sim.inv = 0;
-  sim.bird.y = 640;
-  sim.bird.vy = 400;
+  sim.cat.y = 640;
+  sim.cat.vy = 400;
   frames(2);
 }
 frames(90);

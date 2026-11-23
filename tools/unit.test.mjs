@@ -370,11 +370,11 @@ function bot(sim, { target = 360, frames = 6000, dt = 1 / 60, aware = false } = 
     if (sim.status === 'playing') {
       let aimY = target;
       if (aware) {
-        const gate = sim.gates.find((g) => !g.passed && g.x - sim.dist + g.w > sim.birdX - 20);
+        const gate = sim.gates.find((g) => !g.passed && g.x - sim.dist + g.w > sim.catX - 20);
         if (gate) aimY = gate.gapY ?? gate.baseY;
       }
-      const wantUp = sim.bird.y > aimY + 6 || (sim.bird.y > aimY - 6 && sim.bird.vy > 120);
-      if (wantUp && sim.bird.vy > -140) sim.flap();
+      const wantUp = sim.cat.y > aimY + 6 || (sim.cat.y > aimY - 6 && sim.cat.vy > 120);
+      if (wantUp && sim.cat.vy > -140) sim.flap();
     }
     sim.step(dt);
     steps += 1;
@@ -418,13 +418,13 @@ test('симуляция: старт, взмах и мягкий удар', () =
   assert.equal(sim.status, 'ready');
   sim.flap();
   assert.equal(sim.status, 'playing');
-  const vy = sim.bird.vy;
+  const vy = sim.cat.vy;
   assert.ok(vy < 0);
   sim.step(1 / 60);
-  assert.ok(sim.bird.vy > vy, 'гравитация тянет вниз');
+  assert.ok(sim.cat.vy > vy, 'гравитация тянет вниз');
   // удар о землю отнимает жизнь, но не убивает сразу
-  sim.bird.y = WORLD.GROUND - WORLD.RADIUS - 5;
-  sim.bird.vy = 400;
+  sim.cat.y = WORLD.GROUND - WORLD.RADIUS - 5;
+  sim.cat.vy = 400;
   sim.step(0.016);
   assert.equal(sim.lives, 2);
   assert.ok(sim.inv > 0);
@@ -436,8 +436,8 @@ test('щит гасит удар вместо потери жизни', () => {
   const sim = new Sim({ mode: 'story', levelId: 2, viewW: 400, seed: 3 });
   sim.flap();
   sim.applyPower('shield');
-  sim.bird.y = WORLD.GROUND - WORLD.RADIUS - 5;
-  sim.bird.vy = 300;
+  sim.cat.y = WORLD.GROUND - WORLD.RADIUS - 5;
+  sim.cat.vy = 300;
   sim.step(0.016);
   assert.equal(sim.lives, 3);
   assert.equal(sim.shield, false);
@@ -449,8 +449,8 @@ test('три удара завершают полёт', () => {
   sim.flap();
   for (let i = 0; i < 3; i++) {
     sim.inv = 0;
-    sim.bird.y = WORLD.GROUND - WORLD.RADIUS - 5;
-    sim.bird.vy = 400;
+    sim.cat.y = WORLD.GROUND - WORLD.RADIUS - 5;
+    sim.cat.vy = 400;
     sim.step(0.016);
   }
   assert.equal(sim.lives, 0);
@@ -515,9 +515,9 @@ test('симуляция не выходит за границы мира и н�
   for (let i = 0; i < 1500; i++) {
     if (i % 40 === 0) sim.flap();
     sim.step(1 / 60);
-    assert.ok(Number.isFinite(sim.bird.y));
-    assert.ok(Number.isFinite(sim.bird.vy));
-    assert.ok(sim.bird.y >= 0 && sim.bird.y <= WORLD.H);
+    assert.ok(Number.isFinite(sim.cat.y));
+    assert.ok(Number.isFinite(sim.cat.vy));
+    assert.ok(sim.cat.y >= 0 && sim.cat.y <= WORLD.H);
     for (const h of sim.hazards) and(h);
     for (const it of sim.items) {
       assert.ok(Number.isFinite(it.x) && Number.isFinite(it.y), 'предмет с NaN');
@@ -543,7 +543,7 @@ test('dt ограничен: свёрнутая вкладка не телепо
   assert.ok(sim.dist - before < 40, 'шаг ограничен 0.05 с');
   sim.step(0);
   sim.step(-1);
-  assert.ok(Number.isFinite(sim.bird.y));
+  assert.ok(Number.isFinite(sim.cat.y));
 });
 
 test('мир 6: у дождя есть «спокойная» вторая половина', () => {
@@ -692,4 +692,136 @@ test('герой — кот по имени Поршик, адресат — Х�
   assert.ok(HERO.ouchLines.length >= 4);
   for (const line of [...HERO.idleLines, ...HERO.ouchLines]) assert.ok(line.length > 3);
   assert.equal(HER.name, 'Хозяйка');
+});
+
+/* ---------- версия 2.0 и подарок ---------- */
+
+test('версия игры 2.0 указана в контенте и манифесте', async () => {
+  const content = await import('../assets/js/content.js');
+  assert.equal(content.HERO.version, '2.0');
+  const manifest = JSON.parse(await (await import('node:fs/promises')).readFile(new URL('../site.webmanifest', import.meta.url), 'utf8'));
+  assert.match(manifest.name, /2\.0/);
+  assert.match(manifest.name, /2\.0/);
+});
+
+test('подарок для Егора и Лизы оформлен и подставляется без ошибок', async () => {
+  const { SPECIAL_GIFT, GIFT_BANNER } = await import('../assets/js/content.js');
+  assert.match(GIFT_BANNER, /Special gift for Egor and Liza/);
+  assert.equal(SPECIAL_GIFT.title, 'Егору и Лизе');
+  assert.equal(SPECIAL_GIFT.badge, 'Special gift');
+  assert.ok(SPECIAL_GIFT.lines.length >= 3);
+  for (const line of SPECIAL_GIFT.lines) assert.ok(line.length > 20, 'слишком короткая строка подарка');
+  assert.match(SPECIAL_GIFT.from, /Егора и Лизы/);
+  assert.match(fill(SPECIAL_GIFT.signature), /Хозяйка|Поршик/);
+  assert.ok(!/\{[a-z]+\}/.test(fill(SPECIAL_GIFT.signature)), 'остались неподставленные переменные');
+});
+
+test('обложки: десять вариантов, у каждого файл и подпись', async () => {
+  const fs = await import('node:fs/promises');
+  const covers = await fs.readdir(new URL('../assets/covers/', import.meta.url));
+  const jpgs = covers.filter((f) => f.endsWith('.jpg'));
+  assert.equal(jpgs.length, 10, `обложек ${jpgs.length}`);
+  const big = await fs.readdir(new URL('../assets/covers/full/', import.meta.url));
+  assert.equal(big.filter((f) => f.endsWith('.jpg')).length, 10, 'в full/ не десять обложек');
+  for (const file of jpgs) {
+    const size = (await fs.stat(new URL(`../assets/covers/${file}`, import.meta.url))).size;
+    assert.ok(size > 60_000 && size < 400_000, `${file}: ${Math.round(size / 1024)} КБ — вне разумного веса`);
+  }
+});
+
+test('страница обложек и тексты для Telegram согласованы', async () => {
+  const fs = await import('node:fs/promises');
+  const src = await fs.readFile(new URL('../assets/js/covers-page.js', import.meta.url), 'utf8');
+  const files = [...src.matchAll(/file: '([0-9]{2}-[a-z]+)'/g)].map((m) => m[1]);
+  assert.equal(files.length, 10);
+  assert.equal(new Set(files).size, 10);
+  const messages = [...src.matchAll(/text:\s*'([^']*)'/g)].map((m) => m[1]);
+  assert.ok(messages.length >= 8, `текстов ${messages.length}`);
+  for (const who of ['Егору', 'Лизе', 'Егору и Лизе']) {
+    assert.ok(src.includes(`who: '${who}'`), `нет текста для «${who}»`);
+  }
+  assert.ok(src.includes('{url}'), 'в текстах нет подстановки ссылки');
+  assert.ok(!/https?:\/\/(?!miagpt\.github\.io)/.test(src), 'внешняя ссылка в текстах');
+});
+
+test('значки платформ на месте и без внешних ресурсов', async () => {
+  const fs = await import('node:fs/promises');
+  for (const name of ['appstore', 'googleplay', 'github', 'mangpt']) {
+    const svg = await fs.readFile(new URL(`../assets/img/brands/${name}.svg`, import.meta.url), 'utf8');
+    assert.match(svg, /viewBox="0 0 24 24"/, `${name}: нет viewBox`);
+    assert.ok(!/https?:\/\/(?!www\.w3\.org)/.test(svg), `${name}: внешняя ссылка`);
+  }
+  const mangpt = await fs.readFile(new URL('../assets/img/brands/mangpt.svg', import.meta.url), 'utf8');
+  assert.match(mangpt, /linearGradient/, 'значок MangPT должен быть цветным');
+  assert.match(mangpt, /<circle cx="12" cy="12"/, 'значок MangPT должен повторять круглый контур GitHub');
+  assert.match(mangpt, /<circle cx="9\.6"[\s\S]*<circle cx="14\.4"/, 'у робота должны быть глаза');
+});
+
+test('обложки выводятся в галерее, а не только лежат в папке', async () => {
+  const fs = await import('node:fs/promises');
+  const html = await fs.readFile(new URL('../covers.html', import.meta.url), 'utf8');
+  assert.match(html, /id="coverGrid"/);
+  assert.match(html, /id="msgGrid"/);
+  assert.match(html, /assets\/img\/brands\/mangpt\.svg/, 'в галерее нет значка MangPT');
+  assert.match(html, /Special gift for Egor and Liza|for Egor and Liza/, 'нет надписи подарка');
+  const js = await fs.readFile(new URL('../assets/js/covers-page.js', import.meta.url), 'utf8');
+  for (const badge of ['appstore', 'googleplay', 'github', 'mangpt']) {
+    assert.ok(html.includes(badge) || js.includes(badge), `значок ${badge} не выводится`);
+  }
+});
+
+test('в меню и письме есть версия 2.0 и подарок', async () => {
+  const fs = await import('node:fs/promises');
+  const play = await fs.readFile(new URL('../play.html', import.meta.url), 'utf8');
+  assert.match(play, /brand-ver[^>]*>2\.0</, 'нет бейджа версии 2.0');
+  assert.match(play, /id="menuGift"[\s\S]*Egor and Liza/, 'в меню нет строки подарка');
+  assert.match(play, /id="giftCard"[\s\S]*id="giftLines"/, 'нет блока подарка');
+  assert.match(play, /id="giftTitle"[^>]*>Егору и Лизе</, 'нет заголовка подарка');
+});
+
+test('подарок описан в дневнике и в лендинге', async () => {
+  const fs = await import('node:fs/promises');
+  const love = await fs.readFile(new URL('../love.html', import.meta.url), 'utf8');
+  const index = await fs.readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.match(love, /id="giftCard"/);
+  assert.match(index, /hero-gift/);
+  assert.match(index, /Егору и Лизе/);
+  assert.match(index, /Special gift/);
+});
+
+test('OG-превью и полноразмерные обложки нужных размеров', async () => {
+  const fs = await import('node:fs/promises');
+  const read = async (p) => fs.readFile(new URL(p, import.meta.url));
+  // размеры JPEG читаем из SOF-маркера, без внешних зависимостей
+  const jpegSize = (buf) => {
+    let i = 2;
+    while (i < buf.length) {
+      if (buf[i] !== 0xff) { i++; continue; }
+      const marker = buf[i + 1];
+      const len = buf.readUInt16BE(i + 2);
+      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
+        return { h: buf.readUInt16BE(i + 5), w: buf.readUInt16BE(i + 7) };
+      }
+      i += 2 + len;
+    }
+    return null;
+  };
+  const og = jpegSize(await read('../assets/img/og-cover.jpg'));
+  assert.deepEqual(og, { w: 1200, h: 630 }, 'OG-превью должно быть 1200×630');
+  for (const file of ['01-sunset', '05-stainedglass', '10-home']) {
+    assert.deepEqual(jpegSize(await read(`../assets/covers/${file}.jpg`)), { w: 900, h: 1125 }, `${file}: превью не 900×1125`);
+    assert.deepEqual(jpegSize(await read(`../assets/covers/full/${file}.jpg`)), { w: 1200, h: 1500 }, `${file}: full не 1200×1500`);
+  }
+});
+
+test('сервис-воркер кэширует обложки и новую страницу', async () => {
+  const fs = await import('node:fs/promises');
+  const sw = await fs.readFile(new URL('../sw.js', import.meta.url), 'utf8');
+  assert.match(sw, /covers\.html/);
+  assert.match(sw, /covers\.css/);
+  assert.match(sw, /covers-page\.js/);
+  assert.match(sw, /og-cover\.jpg/);
+  assert.match(sw, /mangpt\.svg/);
+  const version = sw.match(/porshik-v(\d+)/);
+  assert.ok(version && Number(version[1]) >= 4, 'версию кэша нужно поднять');
 });

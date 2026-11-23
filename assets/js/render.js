@@ -623,19 +623,19 @@ export class Renderer {
           ctx.fill();
         }
       } else if (style === 'bloom') {
-        ctx.fillStyle = '#e8b7a3';
+        ctx.fillStyle = theme.gateBody || '#e8b7a3';
         rr(ctx, px, py, w, ph, 14);
         ctx.fill();
         for (let i = 0; i < 4; i++) {
           const yy = py + 30 + i * (ph / 4);
           for (let p = 0; p < 5; p++) {
             const a = (p / 5) * TAU;
-            ctx.fillStyle = '#ffe0d2';
+            ctx.fillStyle = theme.gatePetal || '#ffe0d2';
             ctx.beginPath();
             ctx.ellipse(px + w / 2 + Math.cos(a) * 11, yy + Math.sin(a) * 11, 8, 5, a, 0, TAU);
             ctx.fill();
           }
-          ctx.fillStyle = '#f2c14e';
+          ctx.fillStyle = theme.gateCore || '#f2c14e';
           ctx.beginPath();
           ctx.arc(px + w / 2, yy, 5, 0, TAU);
           ctx.fill();
@@ -929,7 +929,7 @@ export class Renderer {
       ctx.lineTo(14, 8);
       ctx.closePath();
       ctx.fill();
-      ctx.fillStyle = '#f2c14e';
+      ctx.fillStyle = theme.gateCore || '#f2c14e';
       ctx.beginPath();
       ctx.moveTo(-17, -6);
       ctx.lineTo(-23, -3);
@@ -972,8 +972,8 @@ export class Renderer {
     const squash = sim.status === 'dying' ? 0.9 : 1;
 
     ctx.save();
-    ctx.translate(sim.birdX, sim.bird.y);
-    ctx.rotate(sim.status === 'dying' ? sim.bird.rot * 0.8 : sim.bird.rot * 0.34);
+    ctx.translate(sim.catX, sim.cat.y);
+    ctx.rotate(sim.status === 'dying' ? sim.cat.rot * 0.8 : sim.cat.rot * 0.34);
     ctx.scale(1 + breathing, squash - breathing);
     if (sim.inv > 0 && Math.sin(this.time * 26) > 0) ctx.globalAlpha = 0.55;
 

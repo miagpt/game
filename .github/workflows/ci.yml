@@ -24,4 +24,10 @@ jobs:
         run: |
           npm install --no-save jsdom@26.1.0 esbuild@0.25.0
           npm run test:e2e
+      - name: Covers present
+        run: |
+          test -f assets/covers/01-sunset.jpg
+          test -f assets/covers/full/10-home.jpg
+          test -f assets/img/brands/mangpt.svg
+          test -f assets/img/og-cover.jpg
       - run: npm run build

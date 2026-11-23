@@ -1,8 +1,8 @@
 /* Страница «Записки»: читает то же сохранение, что и игра,
    и показывает записки открытыми или закрытыми. */
 
-import { LEVELS, NOTES, FINAL_LETTER, HERO } from './content.js';
-import { SAVE_KEY, ROUNDS, normalizeSave, blankSave, noteText, letterLines, isUnlocked } from './rules.js';
+import { LEVELS, NOTES, FINAL_LETTER, HERO, SPECIAL_GIFT } from './content.js';
+import { SAVE_KEY, ROUNDS, normalizeSave, blankSave, noteText, letterLines, isUnlocked, fill } from './rules.js';
 
 function load() {
   try {
@@ -64,6 +64,16 @@ document.getElementById('letterTitle').textContent = letter.title;
 document.getElementById('letterGreeting').textContent = letter.greeting;
 document.getElementById('letterBody').innerHTML = letter.paragraphs.map((p) => `<p>${escapeHtml(p)}</p>`).join('');
 document.getElementById('letterSignoff').textContent = `${letter.signoff} — ${letter.signature}`;
+
+/* Подарок версии 2.0 */
+const gift = document.getElementById('giftCard');
+if (gift) {
+  document.getElementById('giftBadge').textContent = SPECIAL_GIFT.badge;
+  document.getElementById('giftTitle').textContent = SPECIAL_GIFT.title;
+  document.getElementById('giftSub').textContent = SPECIAL_GIFT.subtitle;
+  document.getElementById('giftLines').innerHTML = SPECIAL_GIFT.lines.map((l) => `<p>${escapeHtml(l)}</p>`).join('');
+  document.getElementById('giftSign').textContent = `${SPECIAL_GIFT.from} — ${fill(SPECIAL_GIFT.signature)}`;
+}
 
 const finalDone = save.stars[ROUNDS - 1] > 0;
 const block = document.getElementById('letterBlock');

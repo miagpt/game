@@ -52,7 +52,7 @@
 .brand-mini:hover {
   background: rgba(255, 255, 255, 0.18);
 }
-.brand-bird {
+.brand-cat {
   font-size: 1.1rem;
 }
 
@@ -184,7 +184,7 @@
   animation: bubbleIn 0.3s ease;
   pointer-events: none;
 }
-.bubble-bird {
+.bubble-cat {
   font-size: 1rem;
 }
 
@@ -708,7 +708,7 @@
   .game-top {
     gap: 6px;
   }
-  .brand-mini span:not(.brand-bird) {
+  .brand-mini span:not(.brand-cat) {
     display: none;
   }
   .hud-chip {
@@ -777,4 +777,41 @@
   .hud-chip.is-low {
     animation: none;
   }
+}
+
+/* ---------------- версия 2.0 и подарок для Егора и Лизы ---------------- */
+
+.brand-ver {
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--sun, #ffc44d);
+  color: #40230f;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  align-self: center;
+}
+
+.menu-gift {
+  margin: 2px 0 12px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  color: #8a3f33;
+  text-align: center;
+}
+.menu-gift span {
+  font-size: 0.95rem;
+}
+
+@media (max-width: 420px) {
+  .brand-ver {
+    display: none;
+  }
+  .gift-card {
+    padding: 14px 14px 16px;
+  }
+
 }

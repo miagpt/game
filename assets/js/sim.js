@@ -45,8 +45,8 @@ export class Sim {
     this.t = 0;
     this.dist = 0;
     this.status = 'ready'; // ready → playing → dying → lost | won
-    this.birdX = clamp(this.viewW * 0.28, 84, 240);
-    this.bird = { y: 320, vy: 0, rot: 0 };
+    this.catX = clamp(this.viewW * 0.28, 84, 240);
+    this.cat = { y: 320, vy: 0, rot: 0 };
     this.startY = 320;
 
     this.maxLives = Number.isFinite(lives) && lives > 0 ? Math.min(3, Math.floor(lives)) : 3;
@@ -80,8 +80,8 @@ export class Sim {
     const p = this.params();
     this.speed = p.speed;
     this.world = p.world;
-    this.nextGateX = this.birdX + FIRST_GATE * 1.15;
-    this.prevAnchor = { x: this.birdX + 210, y: 320 };
+    this.nextGateX = this.catX + FIRST_GATE * 1.15;
+    this.prevAnchor = { x: this.catX + 210, y: 320 };
     this.trackLen =
       this.mode === 'story'
         ? FIRST_GATE * 1.15 + (this.level.gates - 1) * this.level.spacing + this.level.spacing * FINISH_GAP
@@ -126,7 +126,7 @@ export class Sim {
       this.emit('start');
     }
     if (this.status !== 'playing') return;
-    this.bird.vy = FLAP;
+    this.cat.vy = FLAP;
     this.emit('flap');
   }
 
@@ -268,11 +268,11 @@ export class Sim {
 
     if (this.status === 'dying') {
       this.deadT += dt;
-      this.bird.vy = Math.min(MAX_FALL, this.bird.vy + GRAVITY * dt);
-      this.bird.y += this.bird.vy * dt;
-      this.bird.rot = Math.min(1.4, this.bird.rot + 3.4 * dt);
-      if (this.bird.y > GROUND - 24 || this.deadT > 1.4) {
-        this.bird.y = Math.min(GROUND - 24, this.bird.y);
+      this.cat.vy = Math.min(MAX_FALL, this.cat.vy + GRAVITY * dt);
+      this.cat.y += this.cat.vy * dt;
+      this.cat.rot = Math.min(1.4, this.cat.rot + 3.4 * dt);
+      if (this.cat.y > GROUND - 24 || this.deadT > 1.4) {
+        this.cat.y = Math.min(GROUND - 24, this.cat.y);
         this.status = 'lost';
         this.emit('lost', { reason: this.deadReason || 'ground' });
       }
@@ -284,30 +284,30 @@ export class Sim {
 
     // парение до старта: Поршик мягко качается на месте
     if (!playing) {
-      this.bird.y = this.startY + Math.sin(this.t * 2.2) * 9;
-      this.bird.vy = 0;
-      this.bird.rot = 0;
+      this.cat.y = this.startY + Math.sin(this.t * 2.2) * 9;
+      this.cat.vy = 0;
+      this.cat.rot = 0;
       this.animateHazards(dt, true);
       return;
     }
 
     // физика
     const gMul = this.energizer > 0 ? 0.82 : 1;
-    this.bird.vy = Math.min(MAX_FALL, this.bird.vy + GRAVITY * gMul * dt);
-    this.bird.y += this.bird.vy * dt;
-    this.bird.rot = clamp(this.bird.vy / 620, -0.55, 1.05);
+    this.cat.vy = Math.min(MAX_FALL, this.cat.vy + GRAVITY * gMul * dt);
+    this.cat.y += this.cat.vy * dt;
+    this.cat.rot = clamp(this.cat.vy / 620, -0.55, 1.05);
     this.inv = Math.max(0, this.inv - dt);
     this.magnet = Math.max(0, this.magnet - dt);
     this.energizer = Math.max(0, this.energizer - dt);
 
-    if (this.bird.y < RADIUS + 4) {
-      this.bird.y = RADIUS + 4;
-      if (this.bird.vy < 0) this.bird.vy = 0;
+    if (this.cat.y < RADIUS + 4) {
+      this.cat.y = RADIUS + 4;
+      if (this.cat.vy < 0) this.cat.vy = 0;
     }
-    if (this.bird.y > GROUND - RADIUS - 4) {
-      this.bird.y = GROUND - RADIUS - 4;
+    if (this.cat.y > GROUND - RADIUS - 4) {
+      this.cat.y = GROUND - RADIUS - 4;
       if (this.inv <= 0) this.hit('ground');
-      this.bird.vy = Math.max(this.bird.vy, 0);
+      this.cat.vy = Math.max(this.cat.vy, 0);
     }
 
     // мягкий разгон: первые ворота встречают чуть медленнее, к финалу темп выше
@@ -333,7 +333,7 @@ export class Sim {
   }
 
   updateGates() {
-    const bx = this.birdX;
+    const bx = this.catX;
     for (const gate of this.gates) {
       gate.gapY = this.gateY(gate);
       if (gate.passed) continue;
@@ -342,7 +342,7 @@ export class Sim {
       if (inX) {
         const top = gate.gapY - gate.gap / 2;
         const bottom = gate.gapY + gate.gap / 2;
-        const clearance = Math.min(this.bird.y - RADIUS - top, bottom - (this.bird.y + RADIUS));
+        const clearance = Math.min(this.cat.y - RADIUS - top, bottom - (this.cat.y + RADIUS));
         if (clearance < 0) {
           if (this.inv <= 0) this.hit('gate');
         } else if (clearance < NEAR_MISS) {
@@ -359,8 +359,8 @@ export class Sim {
   }
 
   updateItems(dt) {
-    const bx = this.birdX;
-    const by = this.bird.y;
+    const bx = this.catX;
+    const by = this.cat.y;
     const magnetOn = this.magnet > 0;
     for (const it of this.items) {
       if (it.taken) continue;
@@ -426,7 +426,7 @@ export class Sim {
       this.yarnTimer -= dt;
       if (this.yarnTimer <= 0 && this.status === 'playing') {
         this.yarnTimer = 2.4 + this.rand() * 1.3;
-        const y = clamp(this.bird.y + (this.rand() * 2 - 1) * 150, 90, GROUND - 80);
+        const y = clamp(this.cat.y + (this.rand() * 2 - 1) * 150, 90, GROUND - 80);
         this.warnings.push({ type: 'yarn', x: this.viewW + 30, y, spawnAt: this.t + HAZARD_WARN });
       }
     }
@@ -434,7 +434,7 @@ export class Sim {
       this.yarnTimer -= dt;
       if (this.yarnTimer <= 0 && endlessHazards(this.spawned).includes('yarn') && this.status === 'playing') {
         this.yarnTimer = 2.6 + this.rand() * 1.4;
-        const y = clamp(this.bird.y + (this.rand() * 2 - 1) * 160, 90, GROUND - 80);
+        const y = clamp(this.cat.y + (this.rand() * 2 - 1) * 160, 90, GROUND - 80);
         this.warnings.push({ type: 'yarn', x: this.viewW + 30, y, spawnAt: this.t + HAZARD_WARN });
       }
     }
@@ -462,8 +462,8 @@ export class Sim {
       }
     }
 
-    const bx = this.birdX;
-    const by = this.bird.y;
+    const bx = this.catX;
+    const by = this.cat.y;
     for (const h of this.hazards) {
       if (h.dead) continue;
       const x = h.x - this.dist;
@@ -521,8 +521,8 @@ export class Sim {
       this.wind.timer = 2.6 + this.rand() * 1.6;
     }
     if (this.wind.state === 'blowing' && this.status === 'playing') {
-      this.bird.y += this.wind.dir * 92 * dt;
-      this.bird.y = clamp(this.bird.y, RADIUS + 4, GROUND - RADIUS - 4);
+      this.cat.y += this.wind.dir * 92 * dt;
+      this.cat.y = clamp(this.cat.y, RADIUS + 4, GROUND - RADIUS - 4);
     }
   }
 
@@ -542,19 +542,19 @@ export class Sim {
     if (this.lives <= 0) {
       this.status = 'dying';
       this.deadT = 0;
-      this.bird.vy = -160;
+      this.cat.vy = -160;
       this.emit('dying');
       return;
     }
     // мягкий «бамп» вместо смерти: игра добрая, Поршик просто теряет высоту
     this.inv = INVULN;
-    this.bird.vy = -210;
-    this.bird.y = clamp(this.bird.y, 110, GROUND - 90);
+    this.cat.vy = -210;
+    this.cat.y = clamp(this.cat.y, 110, GROUND - 90);
   }
 
   checkFinish() {
     if (this.mode !== 'story' || this.finishX == null) return;
-    if (this.dist + this.birdX >= this.finishX) {
+    if (this.dist + this.catX >= this.finishX) {
       this.status = 'won';
       this.deadT = 0;
       this.emit('won', { fish: this.pathFish, lives: this.lives });

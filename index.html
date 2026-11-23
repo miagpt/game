@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Поршик — кот, который летает 🐈‍⬛</title>
+  <title>Поршик 2.0 — кот, который летает 🐈‍⬛</title>
   <meta name="description" content="Поршик — маленькая тёплая браузерная игра: дымчатый кот летит через десять миров с рыбками, записками и письмом в конце.">
   <meta name="theme-color" content="#fdf3e2">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ru_RU">
-  <meta property="og:title" content="Поршик — кот, который летает">
+  <meta property="og:title" content="Поршик 2.0 — кот, который летает">
   <meta property="og:description" content="Десять миров, целое небо рыбок и записка после каждого перелёта.">
-  <meta property="og:image" content="assets/img/og.jpg">
+  <meta property="og:image" content="assets/img/og-cover.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
@@ -27,12 +27,14 @@
   <a class="brand" href="./index.html" aria-label="Поршик — на главную">
     <span class="brand-mark" aria-hidden="true">🐈‍⬛</span>
     <span>Поршик</span>
+    <span class="brand-ver" title="Версия игры">2.0</span>
   </a>
   <nav class="topnav" aria-label="Разделы">
     <a href="#worlds">Миры</a>
     <a href="#how">Как играть</a>
     <a href="#diary">Дневник</a>
     <a href="love.html">Записки</a>
+    <a href="covers.html">Обложки</a>
   </nav>
   <a class="btn btn--big btn--small" href="play.html">Играть <span aria-hidden="true">↗</span></a>
 </header>
@@ -40,7 +42,7 @@
 <main id="main">
   <section class="hero">
     <div class="hero-copy">
-      <p class="eyebrow">маленькая летательная история</p>
+      <p class="eyebrow">версия 2.0 · маленькая летательная история</p>
       <h1>Небо.<br>Рыбки.<br><em>Дом.</em></h1>
       <p class="lead">
         Поршик — дымчатый кот с большим сердцем и очень решительными усами.
@@ -56,6 +58,7 @@
         <li><b>9</b> записок</li>
         <li><b>8</b> обликов</li>
         <li><b>9</b> миссий</li>
+        <li><b>2.0</b> версия</li>
         <li><b>0</b> рекламы</li>
       </ul>
     </div>
@@ -66,6 +69,15 @@
       </picture>
       <span class="art-sticker">мяу!<br>это я</span>
     </figure>
+    <aside class="hero-gift" id="gift">
+      <p class="hero-gift-badge">Special gift</p>
+      <h2>Егору и Лизе</h2>
+      <p>Версия 2.0 — это десять миров, девять миссий и одно письмо, которое Поршик несёт через всё небо. Подарок для двоих: одна ссылка, никакой рекламы, играется в один тап.</p>
+      <div class="hero-gift-actions">
+        <a class="btn btn--big" href="play.html">Играть <span aria-hidden="true">→</span></a>
+        <a class="btn btn--ghost" href="covers.html">Выбрать обложку</a>
+      </div>
+    </aside>
   </section>
 
   <section class="section" id="worlds">
@@ -96,7 +108,7 @@
         <div class="gate gate--top"></div>
         <div class="gate gate--bottom"></div>
         <div class="how-pie">🐟</div>
-        <div class="how-bird">🐈‍⬛</div>
+        <div class="how-cat">🐈‍⬛</div>
         <div class="how-heart">❤️❤️❤️</div>
       </div>
       <p class="how-caption">Игра не строит непроходимых ворот: симуляцию каждый раз проверяет бот в тестах.</p>
@@ -131,6 +143,12 @@
         <a class="quiet-link" href="play.html">Попробовать <span aria-hidden="true">→</span></a>
       </article>
       <article class="diary-card">
+        <span class="diary-ico" aria-hidden="true">🖼️</span>
+        <h3>Обложки и тексты</h3>
+        <p>Десять готовых обложек с версией 2.0 и надписью «Special gift for Egor and Liza» — плюс короткие сообщения для Telegram.</p>
+        <a class="quiet-link" href="covers.html">Открыть галерею <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="diary-card">
         <span class="diary-ico" aria-hidden="true">💛</span>
         <h3>Письмо в конце</h3>
         <p>После десятого мира Поршик наконец садится на подоконник и достаёт из-за уха письмо.</p>
@@ -146,7 +164,7 @@
       <p>Поршик ждёт на подоконнике. Рыбки — в сумке. Окно открыто.</p>
       <a class="btn btn--big" href="play.html">Полетели! <span aria-hidden="true">↗</span></a>
     </div>
-    <div class="cta-bird" aria-hidden="true">🐈‍⬛</div>
+    <div class="cta-cat" aria-hidden="true">🐈‍⬛</div>
   </section>
 </main>
 
@@ -156,8 +174,15 @@
   <nav aria-label="Подвал">
     <a href="play.html">Играть</a>
     <a href="love.html">Записки</a>
+    <a href="covers.html">Обложки</a>
     <a href="family/">Семейная игра</a>
   </nav>
+  <div class="footer-badges" aria-label="Где найти игру">
+    <span class="footer-badge" title="Скоро в App Store"><img src="assets/img/brands/appstore.svg" width="18" height="18" alt="">App Store</span>
+    <span class="footer-badge" title="Скоро в Google Play"><img src="assets/img/brands/googleplay.svg" width="18" height="18" alt="">Google Play</span>
+    <a class="footer-badge" href="https://github.com/miagpt/game" rel="noopener"><img src="assets/img/brands/github.svg" width="18" height="18" alt="">GitHub</a>
+    <a class="footer-badge footer-badge--ai" href="covers.html"><img src="assets/img/brands/mangpt.svg" width="18" height="18" alt="">MangPT AI</a>
+  </div>
 </footer>
 
 <script type="module" src="assets/js/site.js"></script>

@@ -10,8 +10,8 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const out = path.join(root, 'dist');
 
-const PAGES = ['index.html', 'play.html', 'love.html', '404.html', 'site.webmanifest', 'sw.js'];
-const DIRS = ['assets/css', 'assets/js', 'assets/fonts', 'assets/img'];
+const PAGES = ['index.html', 'play.html', 'love.html', 'covers.html', '404.html', 'site.webmanifest', 'sw.js'];
+const DIRS = ['assets/css', 'assets/js', 'assets/fonts', 'assets/img', 'assets/covers'];
 
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
