@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-  <title>Играть · Поршик — кот, который летает</title>
+  <title>Играть · Поршик 2.0 — кот, который летает</title>
   <meta name="description" content="Поршик — дымчатый кот, который научился летать: десять миров, рыбки, записки и письмо. Тёплая браузерная игра.">
   <meta name="theme-color" content="#3b2a4a">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ru_RU">
-  <meta property="og:title" content="Поршик — воздушный повар">
+  <meta property="og:image" content="assets/img/og-cover.jpg">
+  <meta property="og:title" content="Поршик 2.0 — воздушный кот">
   <meta property="og:description" content="Десять миров, целое небо рыбок и записка после каждого перелёта.">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
@@ -40,8 +41,9 @@
 <div class="game-frame" id="game">
   <header class="game-top">
     <a class="brand-mini" href="./index.html" aria-label="Поршик — на главную">
-      <span class="brand-bird" aria-hidden="true">🐈‍⬛</span>
+      <span class="brand-cat" aria-hidden="true">🐈‍⬛</span>
       <span>Поршик</span>
+      <span class="brand-ver" title="Версия игры">2.0</span>
     </a>
     <div class="hud" id="hud">
       <div class="hud-chip" id="hudLives" title="Жизни">
@@ -67,7 +69,7 @@
     <canvas id="canvas" aria-label="Игровое поле: лети между воротами и собирай рыбок"></canvas>
     <div class="powers" id="powers" aria-live="off"></div>
     <div class="bubble" id="bubble" hidden>
-      <span class="bubble-bird" aria-hidden="true">🐈‍⬛</span>
+      <span class="bubble-cat" aria-hidden="true">🐈‍⬛</span>
       <span id="bubbleText"></span>
     </div>
     <div class="toast" id="toast" hidden role="status"></div>
@@ -87,6 +89,7 @@
           <button class="btn btn--gold" id="btnEndless" type="button">Бесконечный полёт</button>
         </div>
         <p class="menu-foot"><b id="walletFish">0</b> рыбок · рекорд бесконечного: <b id="menuBest">0</b></p>
+        <p class="menu-gift" id="menuGift">Special gift for Egor and Liza <span aria-hidden="true">🎁</span></p>
         <p class="menu-daily" id="menuDaily" hidden><span aria-hidden="true">🎁</span> <span id="menuDailyText"></span></p>
       </div>
     </section>
@@ -166,7 +169,7 @@
     <!-- Проигрыш -->
     <section class="panel" id="screenLose" hidden>
       <div class="panel-card">
-        <h2 class="panel-title" id="loseTitle">Ой. Крошки!</h2>
+        <h2 class="panel-title" id="loseTitle">Ой. Усы!</h2>
         <p class="panel-story" id="loseText"></p>
         <div class="lose-bar"><span id="loseProgressText">Пройдено 0%</span><b id="loseGain">+0 в кошелёк</b></div>
         <div class="menu-row">
@@ -203,6 +206,15 @@
         <p class="letter-hi" id="letterHi"></p>
         <div class="letter-body" id="letterBody"></div>
         <p class="letter-sign" id="letterSign"></p>
+
+        <aside class="gift-card" id="giftCard">
+          <p class="gift-badge" id="giftBadge">Special gift</p>
+          <h3 class="gift-title" id="giftTitle">Егору и Лизе</h3>
+          <p class="gift-sub" id="giftSub">Подарок версии 2.0 · для двоих</p>
+          <div class="gift-lines" id="giftLines"></div>
+          <p class="gift-sign" id="giftSign"></p>
+        </aside>
+
         <div class="menu-row">
           <button class="btn btn--big" id="btnLetterDone" type="button">Домой</button>
           <button class="btn btn--ghost" type="button" data-go="menu">Ещё полетать</button>

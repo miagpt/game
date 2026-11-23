@@ -3,16 +3,27 @@
   "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "Поршик — кот, который летает. Тёплая браузерная игра на HTML Canvas без сборки и зависимостей",
-  "engines": { "node": ">=18" },
+  "description": "Поршик 2.0 — кот, который летает. Тёплая браузерная игра на HTML Canvas без сборки и зависимостей. Special gift for Egor and Liza.",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "start": "node tools/serve.mjs",
     "test": "node --test tools/*.test.mjs && node tools/site-check.mjs",
     "test:unit": "node --test tools/*.test.mjs",
     "test:site": "node tools/site-check.mjs",
     "test:e2e": "node tools/e2e.mjs",
-    "build": "node tools/build-site.mjs"
+    "build": "node tools/build-site.mjs",
+    "covers": "node tools/covers.mjs"
   },
-  "keywords": ["game", "canvas", "flappy", "html5", "no-dependencies"],
+  "keywords": [
+    "game",
+    "canvas",
+    "flappy",
+    "html5",
+    "no-dependencies",
+    "cat",
+    "porshik"
+  ],
   "license": "MIT"
 }

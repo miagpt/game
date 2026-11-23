@@ -4,7 +4,17 @@
    (audio.js) и сохранение (rules.js) с интерфейсом play.html.
    ═══════════════════════════════════════════════════════════════ */
 
-import { LEVELS, NOTES, SKINS, HERO, HER, MISSIONS, TELEGRAMS, FINAL_LETTER } from './content.js';
+import {
+  LEVELS,
+  NOTES,
+  SKINS,
+  HERO,
+  HER,
+  MISSIONS,
+  TELEGRAMS,
+  FINAL_LETTER,
+  SPECIAL_GIFT,
+} from './content.js';
 import {
   SAVE_KEY,
   ROUNDS,
@@ -180,7 +190,7 @@ function createIdleSim(levelId, endless = false) {
     lives: 3,
   });
   s.status = 'ready';
-  s.bird.y = 320;
+  s.cat.y = 320;
   s.startY = 320;
   renderer.setSkin(save.skin);
   renderer.dim = 0;
@@ -313,8 +323,8 @@ function drawSkinPreview(c, skinId) {
     shield: false,
     magnet: 0,
     energizer: 0,
-    birdX: 60,
-    bird: { y: 62, vy: 0, rot: 0 },
+    catX: 60,
+    cat: { y: 62, vy: 0, rot: 0 },
     gates: [],
     items: [],
     hazards: [],
@@ -438,20 +448,20 @@ function showTelegrams() {
 function handleEvents() {
   for (const ev of sim.events) {
     if (ev.type === 'fish') {
-      renderer.float('+1', sim.birdX + 18, sim.bird.y - 26, '#e6f4fb', 20);
-      renderer.burst(sim.birdX + 16, sim.bird.y - 10, 4, '#a9d4e8', 90);
+      renderer.float('+1', sim.catX + 18, sim.cat.y - 26, '#e6f4fb', 20);
+      renderer.burst(sim.catX + 16, sim.cat.y - 10, 4, '#a9d4e8', 90);
       sound.fish();
     } else if (ev.type === 'streak') {
-      renderer.float(`+${ev.bonus} подряд!`, sim.birdX + 10, sim.bird.y - 46, '#fff3c4', 22);
-      renderer.burst(sim.birdX, sim.bird.y - 20, 10, '#ffd166', 150, { shape: 'star' });
+      renderer.float(`+${ev.bonus} подряд!`, sim.catX + 10, sim.cat.y - 46, '#fff3c4', 22);
+      renderer.burst(sim.catX, sim.cat.y - 20, 10, '#ffd166', 150, { shape: 'star' });
     } else if (ev.type === 'treat') {
       const names = { sausage: 'Сосиска', bun: 'Булочка', mouse: 'Мышка', cream: 'Сливки', heart: 'Сердечко' };
-      renderer.float(`+${ev.worth} ${names[ev.treat] || 'Бонус'}`, sim.birdX + 10, sim.bird.y - 40, '#ffd8e2', 22);
-      renderer.burst(sim.birdX, sim.bird.y - 10, 12, ev.treat === 'cream' ? '#f7f1e3' : '#f7a1c4', 170, { shape: 'heart' });
+      renderer.float(`+${ev.worth} ${names[ev.treat] || 'Бонус'}`, sim.catX + 10, sim.cat.y - 40, '#ffd8e2', 22);
+      renderer.burst(sim.catX, sim.cat.y - 10, 12, ev.treat === 'cream' ? '#f7f1e3' : '#f7a1c4', 170, { shape: 'heart' });
       sound.treat();
     } else if (ev.type === 'power') {
       const labels = { shield: 'Пузырь!', magnet: 'Магнит!', energizer: 'Энергия!' };
-      renderer.float(`${labels[ev.power]}`, sim.birdX, sim.bird.y - 44, '#d6f2ff', 24);
+      renderer.float(`${labels[ev.power]}`, sim.catX, sim.cat.y - 44, '#d6f2ff', 24);
       sound.power();
       updateHud();
     } else if (ev.type === 'hurt') {
@@ -459,18 +469,18 @@ function handleEvents() {
       renderer.shake = 1;
       renderer.flash = 0.6;
       renderer.flashColor = '#ff6b81';
-      renderer.burst(sim.birdX, sim.bird.y, 14, '#ffcf9e', 210, { shape: 'dot' });
+      renderer.burst(sim.catX, sim.cat.y, 14, '#ffcf9e', 210, { shape: 'dot' });
       const line = HERO.ouchLines[Math.floor(Math.random() * HERO.ouchLines.length)];
       setBubble(line, 1600);
       sound.meow();
       updateHud();
     } else if (ev.type === 'shieldBreak') {
       sound.shield();
-      renderer.burst(sim.birdX, sim.bird.y, 16, '#8fd3f4', 220);
-      renderer.float('Пузырь спас!', sim.birdX, sim.bird.y - 40, '#cdefff', 20);
+      renderer.burst(sim.catX, sim.cat.y, 16, '#8fd3f4', 220);
+      renderer.float('Пузырь спас!', sim.catX, sim.cat.y - 40, '#cdefff', 20);
       updateHud();
     } else if (ev.type === 'gate') {
-      if (ev.nearMiss) renderer.float('впритирку!', sim.birdX, sim.bird.y - 30, '#ffffff', 18);
+      if (ev.nearMiss) renderer.float('впритирку!', sim.catX, sim.cat.y - 30, '#ffffff', 18);
     } else if (ev.type === 'danger') {
       // лёгкая тряска, чтобы игрок заметил опасность
       renderer.shake = Math.max(renderer.shake, 0.25);
@@ -588,12 +598,24 @@ function openNote() {
   mode = 'note';
 }
 
+/* Подарок версии 2.0: блок внутри финального письма. */
+function renderGiftCard() {
+  const card = $('giftCard');
+  if (!card) return;
+  $('giftBadge').textContent = SPECIAL_GIFT.badge;
+  $('giftTitle').textContent = SPECIAL_GIFT.title;
+  $('giftSub').textContent = SPECIAL_GIFT.subtitle;
+  $('giftLines').innerHTML = SPECIAL_GIFT.lines.map((line) => `<p>${line}</p>`).join('');
+  $('giftSign').textContent = `${SPECIAL_GIFT.from} — ${fill(SPECIAL_GIFT.signature)}`;
+}
+
 function openLetter() {
   const l = letterLines(FINAL_LETTER);
   $('letterTitle').textContent = l.title;
   $('letterHi').textContent = l.greeting;
   $('letterBody').innerHTML = l.paragraphs.map((p) => `<p>${p}</p>`).join('');
   $('letterSign').textContent = `${l.signoff} — ${l.signature}`;
+  renderGiftCard();
   showScreen('screenLetter');
   mode = 'letter';
   renderer.burst(renderer.worldW / 2, WORLD.H - 60, 26, '#ffb3c6', 220, { shape: 'heart', gravity: -90 });
