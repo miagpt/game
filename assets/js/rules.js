@@ -144,6 +144,7 @@ export function blankSave() {
     sound: true,
     music: true,
     giftClaimed: '',
+    starterShield: false,
     endless: { passed: 0, fish: 0 },
   };
 }
@@ -208,6 +209,7 @@ export function normalizeSave(value) {
   out.sound = typeof raw.sound === 'boolean' ? raw.sound : true;
   out.music = raw.music !== false;
   out.giftClaimed = typeof raw.giftClaimed === 'string' ? raw.giftClaimed.slice(0, 10) : '';
+  out.starterShield = raw.starterShield === true;
   const endless = raw.endless && typeof raw.endless === 'object' ? raw.endless : {};
   out.endless = { passed: int(endless.passed), fish: int(endless.fish) };
   return out;

@@ -363,6 +363,11 @@ function startRun(levelId = pendingLevel, endless = false) {
     seed: Date.now() >>> 0,
     lives: 3,
   });
+  // Награда миссии «Первый полёт»: пузырь уже на старте.
+  if (save.starterShield && !endless) {
+    sim.applyPower('shield');
+    sim.events.length = 0; // награда не должна проигрываться как подобранный бонус
+  }
   renderer.setSkin(save.skin);
   renderer.particles.length = 0;
   renderer.floats.length = 0;

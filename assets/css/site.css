@@ -149,6 +149,11 @@ body.site {
   background: linear-gradient(180deg, #ffd7a0, #ffeccf);
   aspect-ratio: 960 / 504;
 }
+.hero-art picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 .hero-photo {
   width: 100%;
   height: 100%;

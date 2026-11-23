@@ -40,6 +40,7 @@ import {
   levelIntro,
   difficultyOf,
   SAVE_KEY,
+  SAVE_VERSION,
 } from '../assets/js/rules.js';
 import { Sim, mulberry32, SIM_WORLD } from '../assets/js/sim.js';
 import { THEMES, themeOf } from '../assets/js/themes.js';
@@ -594,4 +595,101 @@ test('темы: у каждого мира есть палитра и тип в�
     assert.ok(t.label.length > 2);
   }
   assert.equal(themeOf('нет такого'), THEMES.roof);
+});
+
+/* ---------- новые правила (v2) ---------- */
+
+test('сохранение v1 читается как v2: пирожки становятся рыбками', () => {
+  const old = { v: 1, pies: 140, totalPies: 300, best: 9, stars: [3, 2, 1, 0, 0, 0, 0, 0, 0, 0], hearts: [18, 12, 5, 0, 0, 0, 0, 0, 0, 0] };
+  const s = normalizeSave(old);
+  assert.equal(s.v, SAVE_VERSION);
+  assert.equal(s.fish, 140);
+  assert.equal(s.totalFish, 300);
+  assert.equal(s.best, 9);
+  assert.deepEqual(s.bestRun.slice(0, 3), [18, 12, 5]);
+});
+
+test('бесконечный рекорд хранится отдельно от звёзд', () => {
+  const s = normalizeSave({ endless: { passed: 27, fish: 61 } });
+  assert.deepEqual(s.endless, { passed: 27, fish: 61 });
+  assert.deepEqual(normalizeSave({ endless: 'мусор' }).endless, { passed: 0, fish: 0 });
+  assert.deepEqual(normalizeSave({ endless: { passed: -3, fish: 1.9 } }).endless, { passed: 0, fish: 1 });
+});
+
+test('стартовый пузырь нормализуется только как явный true', () => {
+  assert.equal(normalizeSave({ starterShield: true }).starterShield, true);
+  assert.equal(normalizeSave({ starterShield: 'да' }).starterShield, false);
+  assert.equal(blankSave().starterShield, false);
+});
+
+test('миссия «Первый полёт» выдаёт пузырь и не дублируется', () => {
+  let s = { ...blankSave(), played: 3 };
+  const first = claimMissions(s);
+  assert.equal(first.save.starterShield, true);
+  assert.ok(first.save.missions.includes('first'));
+  const again = claimMissions(first.save);
+  assert.equal(again.unlocked.length, 0);
+  assert.equal(again.save.missions.filter((m) => m === 'first').length, 1);
+});
+
+test('награды миссий — только существующие облики', () => {
+  const s = { ...blankSave(), stars: [3, 3, 3, 3, 3, 3, 3, 3, 3, 3], played: 10, totalFish: 2000, best: 30, flawless: [5] };
+  const { save: after, unlocked } = claimMissions(s);
+  for (const skin of unlocked) assert.ok(SKINS.some((x) => x.id === skin.id), `нет облика ${skin.id}`);
+  assert.equal(after.missions.length, new Set(after.missions).size);
+  assert.ok(after.missions.length >= 8, `выдано ${after.missions.length} миссий`);
+});
+
+test('у каждого мира своя опасность и она описана', () => {
+  for (const level of LEVELS) {
+    for (const h of level.hazards) {
+      assert.ok(HAZARDS[h], `мир ${level.id}: нет описания опасности ${h}`);
+      assert.ok(HAZARDS[h].name.length > 3 && HAZARDS[h].hint.length > 10);
+    }
+  }
+  const worlds = new Set(LEVELS.flatMap((l) => l.hazards));
+  assert.ok(worlds.size >= 7, `мало разных опасностей: ${[...worlds].join(', ')}`);
+});
+
+test('лакомства привязаны к миру и дают 2–3 рыбки', () => {
+  for (const level of LEVELS) {
+    const sim = new Sim({ mode: 'story', levelId: level.id, viewW: 420, seed: 3 });
+    const treats = new Set(sim.items.filter((i) => i.type === 'treat').map((i) => i.treat));
+    for (const t of treats) assert.ok(['sausage', 'bun', 'mouse', 'cream', 'heart'].includes(t), `неизвестное лакомство ${t}`);
+    const worth = sim.treatKind(level.world);
+    assert.ok(typeof worth === 'string' && worth.length > 2);
+  }
+});
+
+test('опасности симуляции новых типов двигаются и не ломают мир', () => {
+  const sim = new Sim({ mode: 'story', levelId: 10, viewW: 420, seed: 8 });
+  sim.flap();
+  sim.applyPower('shield');
+  for (let i = 0; i < 900; i++) {
+    if (i % 25 === 0) sim.flap();
+    sim.step(1 / 60);
+    for (const h of sim.hazards) {
+      assert.ok(Number.isFinite(h.x) && Number.isFinite(h.y), 'опасность с NaN');
+      assert.ok(h.y > -400 && h.y < WORLD.H + 400, 'опасность улетела за мир');
+    }
+  }
+  assert.ok(sim.hazards.length < 120);
+});
+
+test('тексты игры не содержат остатков старого персонажа', async () => {
+  const files = ['../assets/js/content.js', '../assets/js/game.js', '../assets/js/render.js', '../assets/js/rules.js', '../assets/js/sim.js'];
+  const bad = /попуга|корелл|клюв|перья|перышк|пёрышк|ку-ку|пирож/i;
+  for (const f of files) {
+    const src = await (await import('node:fs/promises')).readFile(new URL(f, import.meta.url), 'utf8');
+    assert.ok(!bad.test(src), `${f}: остались упоминания старого персонажа`);
+  }
+});
+
+test('герой — кот по имени Поршик, адресат — Хозяйка', () => {
+  assert.equal(HERO.name, 'Поршик');
+  assert.match(HERO.kind, /кот/);
+  assert.ok(HERO.idleLines.length >= 8);
+  assert.ok(HERO.ouchLines.length >= 4);
+  for (const line of [...HERO.idleLines, ...HERO.ouchLines]) assert.ok(line.length > 3);
+  assert.equal(HER.name, 'Хозяйка');
 });
