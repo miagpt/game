@@ -344,6 +344,52 @@ Object.defineProperty(window.localStorage, 'setItem', { configurable: true, valu
 api.stopAudio();
 await shoot('final');
 
+/* ---------- страница записок и галерея обложек ---------- */
+for (const [page, entry, probe] of [
+  [
+    'love.html',
+    'assets/js/love.js',
+    (d) => {
+      check(d.querySelectorAll('.note-item').length >= 9, 'дневник не вывел записки');
+      check(/Егору и Лизе/.test(d.getElementById('giftTitle').textContent || ''), 'в дневнике нет подарка');
+      check(d.querySelectorAll('#giftLines p').length >= 3, 'в дневнике пустой текст подарка');
+      check(/Поршик/.test(d.getElementById('giftSign').textContent || ''), 'у подарка в дневнике нет подписи');
+    },
+  ],
+  [
+    'covers.html',
+    'assets/js/covers-page.js',
+    (d) => {
+      check(d.querySelectorAll('.cover-card').length === 10, 'в галерее не десять обложек');
+      check(d.querySelectorAll('.msg-card').length >= 8, 'мало текстов для Telegram');
+      const first = d.querySelector('.msg-text').textContent || '';
+      check(first.includes('https://miagpt.github.io/game/'), 'в тексте нет ссылки на игру');
+      check(!/\{url\}/.test(d.body.innerHTML), 'остался плейсхолдер {url}');
+      check(d.querySelectorAll('.cover-shot img').length === 10, 'у обложек нет картинок');
+      check(!!d.querySelector('.msg-card button'), 'нет кнопки копирования');
+    },
+  ],
+]) {
+  const html = await readFile(path.join(root, page), 'utf8');
+  const bundle = await esbuild.build({
+    entryPoints: [path.join(root, entry)],
+    bundle: true,
+    write: false,
+    format: 'iife',
+    target: 'es2020',
+    logLevel: 'silent',
+  });
+  const pageDom = new JSDOM(html, { url: `https://miagpt.github.io/game/${page}`, runScripts: 'outside-only', pretendToBeVisual: true });
+  pageDom.window.addEventListener('error', (e) => errors.push(`${page}: ${e.message}`));
+  pageDom.window.eval(bundle.outputFiles[0].text);
+  try {
+    probe(pageDom.window.document);
+  } catch (e) {
+    problems.push(`${page}: ${e.message}`);
+  }
+  pageDom.window.close();
+}
+
 /* ---------- отчёт ---------- */
 dom.window.close();
 
