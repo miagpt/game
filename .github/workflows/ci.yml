@@ -1,5 +1,6 @@
 name: Tests
 on:
+  workflow_dispatch:
   pull_request:
   push:
     branches: [main]
@@ -19,7 +20,7 @@ jobs:
           node-version: 22
       - run: npm test
       - name: Syntax check
-        run: for f in assets/js/*.js tools/*.mjs; do node --check "$f"; done
+        run: for f in assets/js/*.js happy-home/*.js tools/*.mjs; do node --check "$f"; done
       - name: Browser-free end-to-end
         run: |
           npm install --no-save jsdom@26.1.0 esbuild@0.25.0

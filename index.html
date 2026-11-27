@@ -3,188 +3,69 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Поршик 2.0 — кот, который летает 🐈‍⬛</title>
-  <meta name="description" content="Поршик — маленькая тёплая браузерная игра: дымчатый кот летит через десять миров с рыбками, записками и письмом в конце.">
-  <meta name="theme-color" content="#fdf3e2">
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="ru_RU">
-  <meta property="og:title" content="Поршик 2.0 — кот, который летает">
-  <meta property="og:description" content="Десять миров, целое небо рыбок и записка после каждого перелёта.">
-  <meta property="og:image" content="assets/img/og-cover.jpg">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
-  <link rel="manifest" href="site.webmanifest">
-  <link rel="preload" href="assets/fonts/nunito-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/fonts/caveat-cyrillic-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="assets/css/base.css">
-  <link rel="stylesheet" href="assets/css/site.css">
+  <meta name="theme-color" content="#182635">
+  <meta name="description" content="Happy Home — семейное приключение в браузере. Пять героев, пять глав и пятьдесят испытаний.">
+  <link rel="icon" href="assets/img/happyhome-icon.svg" type="image/svg+xml">
+  <title>Happy Home — семейное приключение</title>
+  <link rel="stylesheet" href="happy-home/style.css">
 </head>
-<body class="site">
-<a class="skip-link" href="#main">К содержанию</a>
-
-<header class="topbar">
-  <a class="brand" href="./index.html" aria-label="Поршик — на главную">
-    <span class="brand-mark" aria-hidden="true">🐈‍⬛</span>
-    <span>Поршик</span>
-    <span class="brand-ver" title="Версия игры">2.0</span>
-  </a>
-  <nav class="topnav" aria-label="Разделы">
-    <a href="#worlds">Миры</a>
-    <a href="#how">Как играть</a>
-    <a href="#diary">Дневник</a>
-    <a href="love.html">Записки</a>
-    <a href="covers.html">Обложки</a>
-  </nav>
-  <a class="btn btn--big btn--small" href="play.html">Играть <span aria-hidden="true">↗</span></a>
-</header>
-
-<main id="main">
-  <section class="hero">
-    <div class="hero-copy">
-      <p class="eyebrow">версия 2.0 · маленькая летательная история</p>
-      <h1>Небо.<br>Рыбки.<br><em>Дом.</em></h1>
-      <p class="lead">
-        Поршик — дымчатый кот с большим сердцем и очень решительными усами.
-        Однажды он посмотрел на голубей, потом на свои лапы — и полетел через
-        десять миров к единственному окну, где его ждут.
-      </p>
-      <div class="hero-actions">
-        <a class="btn btn--big" href="play.html">Начать полёт <span aria-hidden="true">→</span></a>
-        <a class="btn btn--ghost" href="love.html">Читать записки</a>
+<body>
+  <main class="app-shell" id="app">
+    <header class="topbar">
+      <a class="wordmark" href="./" aria-label="Happy Home — главная"><span class="wordmark-icon">⌂</span><span>happy <b>home</b></span></a>
+      <div class="top-actions">
+        <button class="sound-toggle" id="musicBtn" type="button" aria-pressed="false" aria-label="Включить музыку"><span aria-hidden="true">♫</span><span class="toggle-label">Музыка</span><i></i></button>
+        <button class="sound-toggle" id="sfxBtn" type="button" aria-pressed="false" aria-label="Включить звуки"><span aria-hidden="true">◖</span><span class="toggle-label">Звуки</span><i></i></button>
       </div>
-      <ul class="hero-facts">
-        <li><b>10</b> миров</li>
-        <li><b>9</b> записок</li>
-        <li><b>8</b> обликов</li>
-        <li><b>9</b> миссий</li>
-        <li><b>2.0</b> версия</li>
-        <li><b>0</b> рекламы</li>
-      </ul>
-    </div>
-    <figure class="hero-art">
-      <picture>
-        <source srcset="assets/img/og.jpg" media="(min-width: 1100px)">
-        <img class="hero-photo" src="assets/img/hero.jpg" width="960" height="504" alt="Поршик — дымчатый серый кот с зелёными глазами, летит над вечерними крышами, а в тёплом окне его ждёт маленький котёнок">
-      </picture>
-      <span class="art-sticker">мяу!<br>это я</span>
-    </figure>
-    <aside class="hero-gift" id="gift">
-      <p class="hero-gift-badge">Special gift</p>
-      <h2>Егору и Лизе</h2>
-      <p>Версия 2.0 — это десять миров, девять миссий и одно письмо, которое Поршик несёт через всё небо. Подарок для двоих: одна ссылка, никакой рекламы, играется в один тап.</p>
-      <div class="hero-gift-actions">
-        <a class="btn btn--big" href="play.html">Играть <span aria-hidden="true">→</span></a>
-        <a class="btn btn--ghost" href="covers.html">Выбрать обложку</a>
+    </header>
+
+    <section class="screen screen-home" id="homeScreen">
+      <div class="home-copy">
+        <div class="kicker"><span class="kicker-dot"></span> ИСТОРИЯ О ТОМ, КАК ВСЕ ДОБИРАЮТСЯ ДОМОЙ</div>
+        <h1>Большое<br>приключение.<br><em>Свои рядом.</em></h1>
+        <p class="intro">Пять героев, пять глав и пятьдесят испытаний. Лети, исследуй, помогай команде — и возвращайся туда, где тебя ждут.</p>
+        <div class="home-buttons">
+          <button class="button button-primary" id="continueBtn"><span id="continueLabel">Начать приключение</span><span aria-hidden="true">↗</span></button>
+          <button class="button button-quiet" id="mapBtn">К карте <span aria-hidden="true">↓</span></button>
+        </div>
+        <div class="facts"><span><b>05</b> глав</span><span><b>50</b> испытаний</span><span><b>0</b> рекламы</span><span class="save-note">прогресс хранится на этом устройстве</span></div>
       </div>
-    </aside>
-  </section>
-
-  <section class="section" id="worlds">
-    <div class="section-head">
-      <div>
-        <p class="eyebrow">маршрут · 10 миров</p>
-        <h2>Десять остановок<br>до одного окна.</h2>
+      <div class="home-art" role="img" aria-label="Иллюстрация семейной команды">
+        <div class="sun-orbit orbit-a"></div><div class="sun-orbit orbit-b"></div>
+        <div class="sun-disc"></div>
+        <div class="art-caption"><span>ПЯТЬ ГЕРОЕВ</span><span>ОДНА КОМАНДА</span></div>
+        <div class="hero-stack" id="heroStack"></div>
+        <div class="float-card float-card-top"><span>✦</span> ГОТОВЫ?</div>
+        <div class="float-card float-card-bottom"><span>⌁</span> СВОЙ ТЕМП</div>
+        <div class="art-ground"></div>
       </div>
-      <p class="section-note">Каждый мир — короткий перелёт на две-три минуты. Препятствия добрые, рыбки остаются в кошельке даже после неудачного залёта, а сложность растёт постепенно.</p>
-    </div>
-    <ol class="world-grid" id="worldGrid"></ol>
-  </section>
+      <div class="home-scroll"><span></span> листай к карте</div>
+    </section>
 
-  <section class="section section--split" id="how">
-    <div>
-      <p class="eyebrow">как играть</p>
-      <h2>Один тап —<br>один взмах.</h2>
-      <p class="section-note">На компьютере: пробел, ↑ или W. На телефоне: тап по небу. Esc или кнопка Ⅱ — пауза. Звук и музыка выключаются отдельно.</p>
-      <ul class="rules">
-        <li><span aria-hidden="true">🐟</span><div><b>Рыбки</b> — валюта и настроение. Рыбка в каждом просвете, дорожка между воротами и бонусы: сосиски, булочки, золотые мышки.</div></li>
-        <li><span aria-hidden="true">❤️</span><div><b>Три жизни</b> на полёт. Пузырь, магнит и энергия помогают, но лапы всё равно главные.</div></li>
-        <li><span aria-hidden="true">⭐</span><div><b>Три звезды</b> за мир: пройти, собрать 65% рыбок и не потерять ни одной жизни.</div></li>
-        <li><span aria-hidden="true">✉️</span><div><b>Записка</b> после каждого мира и финальное письмо после десятого.</div></li>
-      </ul>
-    </div>
-    <div class="how-card">
-      <div class="how-visual" aria-hidden="true">
-        <div class="gate gate--top"></div>
-        <div class="gate gate--bottom"></div>
-        <div class="how-pie">🐟</div>
-        <div class="how-cat">🐈‍⬛</div>
-        <div class="how-heart">❤️❤️❤️</div>
+    <section class="map-section" id="mapSection">
+      <div class="section-heading"><div><p class="eyebrow">ПУТЬ К ДОМУ · 5 ГЛАВ</p><h2>Выбери главу</h2></div><p>Каждая новая глава добавляет испытания. Новые правила сначала объясняются — дальше ты решаешь, как пройти маршрут.</p></div>
+      <div class="chapter-grid" id="chapterGrid"></div>
+      <div class="map-foot"><span>ТВОЙ ПРОГРЕСС</span><div class="overall-track"><i id="overallProgress"></i></div><b id="progressText">0 / 50</b></div>
+    </section>
+
+    <section class="screen screen-game" id="gameScreen" hidden>
+      <div class="game-bar">
+        <button class="round-icon" id="backMapBtn" type="button" aria-label="На карту">←</button>
+        <div class="game-stage-title"><span id="gameLevelLabel">ГЛАВА 1 · РАУНД 1</span><b id="gameRoundTitle">Солнечный коридор</b></div>
+        <div class="game-mini-actions"><button class="round-icon" id="gameMusicBtn" type="button" aria-label="Музыка" aria-pressed="false">♫</button><button class="round-icon" id="gameSfxBtn" type="button" aria-label="Звуки" aria-pressed="false">◖</button><button class="round-icon pause-icon" id="pauseBtn" type="button" aria-label="Пауза">Ⅱ</button></div>
       </div>
-      <p class="how-caption">Игра не строит непроходимых ворот: симуляцию каждый раз проверяет бот в тестах.</p>
-    </div>
-  </section>
-
-  <section class="section" id="diary">
-    <div class="section-head">
-      <div>
-        <p class="eyebrow">дневник</p>
-        <h2>Что Поршик<br>рассказывает потом.</h2>
+      <div class="game-meta"><div class="progress-track"><i id="roundProgress"></i></div><span id="timeLeft">02:00</span><span class="lives" id="lives">♥ ♥ ♥</span></div>
+      <div class="canvas-wrap" id="canvasWrap">
+        <canvas id="gameCanvas" tabindex="0" aria-describedby="gameCaption" aria-label="Игровое поле. Клавиши пробел, стрелка вверх или W — взмах; Escape — пауза"></canvas>
+        <div class="canvas-hint" id="canvasHint">КАСАЙСЯ, ЧТОБЫ ЛЕТЕТЬ <span>↑</span></div>
+        <div class="game-overlay" id="pauseOverlay" hidden><div class="overlay-card"><p class="eyebrow">ПЕРЕДЫШКА</p><h2>Пауза</h2><p>Маршрут сохранён. Возвращайся, когда будешь готов(а).</p><button class="button button-primary" id="resumeBtn">Продолжить <span>→</span></button><button class="text-button" id="restartBtn">Начать раунд сначала</button></div></div>
+        <div class="game-overlay" id="resultOverlay" hidden><div class="overlay-card"><p class="eyebrow" id="resultEyebrow">РАУНД ПРОЙДЕН</p><h2 id="resultTitle">Классный полёт!</h2><p id="resultText"></p><div class="result-paws" id="resultScore">✦ 0</div><button class="button button-primary" id="nextBtn">Дальше <span>→</span></button><button class="text-button" id="retryBtn">Переиграть раунд</button></div></div>
       </div>
-      <p class="section-note">Записки открываются по мере прохождения и складываются на отдельной странице. Прогресс живёт только в этом браузере — без аккаунтов, сети и таблиц лидеров.</p>
-    </div>
-    <div class="diary-grid">
-      <article class="diary-card">
-        <span class="diary-ico" aria-hidden="true">📖</span>
-        <h3>Записки с маршрута</h3>
-        <p>Девять коротких писем — по одному после каждого мира, кроме финала. Их можно перечитывать в любой момент.</p>
-        <a class="quiet-link" href="love.html">Открыть дневник <span aria-hidden="true">→</span></a>
-      </article>
-      <article class="diary-card">
-        <span class="diary-ico" aria-hidden="true">🎁</span>
-        <h3>Миссии и гардероб</h3>
-        <p>Восемь обликов, девять миссий и звёзды за каждый мир. Облики покупаются за рыбки, часть открывается за миссии.</p>
-        <a class="quiet-link" href="play.html">В гардероб <span aria-hidden="true">→</span></a>
-      </article>
-      <article class="diary-card">
-        <span class="diary-ico" aria-hidden="true">🌙</span>
-        <h3>Бесконечная ночь</h3>
-        <p>После первого финала открывается бесконечный полёт: миры сменяют друг друга, скорость растёт, а рекорд хочется побить ещё раз.</p>
-        <a class="quiet-link" href="play.html">Попробовать <span aria-hidden="true">→</span></a>
-      </article>
-      <article class="diary-card">
-        <span class="diary-ico" aria-hidden="true">🖼️</span>
-        <h3>Обложки и тексты</h3>
-        <p>Десять готовых обложек с версией 2.0 и надписью «Special gift for Egor and Liza» — плюс короткие сообщения для Telegram.</p>
-        <a class="quiet-link" href="covers.html">Открыть галерею <span aria-hidden="true">→</span></a>
-      </article>
-      <article class="diary-card">
-        <span class="diary-ico" aria-hidden="true">💛</span>
-        <h3>Письмо в конце</h3>
-        <p>После десятого мира Поршик наконец садится на подоконник и достаёт из-за уха письмо.</p>
-        <a class="quiet-link" href="love.html#letter">Прочитать <span aria-hidden="true">→</span></a>
-      </article>
-    </div>
-  </section>
+      <p class="game-caption" id="gameCaption" aria-live="polite">Касайся поля, чтобы взлететь. Пауза доступна в любой момент.</p>
+    </section>
 
-  <section class="cta">
-    <div class="cta-inner">
-      <p class="eyebrow">пора</p>
-      <h2>Лапы уже<br>работают.</h2>
-      <p>Поршик ждёт на подоконнике. Рыбки — в сумке. Окно открыто.</p>
-      <a class="btn btn--big" href="play.html">Полетели! <span aria-hidden="true">↗</span></a>
-    </div>
-    <div class="cta-cat" aria-hidden="true">🐈‍⬛</div>
-  </section>
-</main>
-
-<footer class="footer">
-  <a class="brand" href="./index.html"><span class="brand-mark" aria-hidden="true">🐈‍⬛</span> <span>Поршик</span></a>
-  <p>Сделано с любовью, усами и одной очень важной рыбкой.
-  <nav aria-label="Подвал">
-    <a href="play.html">Играть</a>
-    <a href="love.html">Записки</a>
-    <a href="covers.html">Обложки</a>
-    <a href="family/">Семейная игра</a>
-  </nav>
-  <div class="footer-badges" aria-label="Где найти игру">
-    <span class="footer-badge" title="Скоро в App Store"><img src="assets/img/brands/appstore.svg" width="18" height="18" alt="">App Store</span>
-    <span class="footer-badge" title="Скоро в Google Play"><img src="assets/img/brands/googleplay.svg" width="18" height="18" alt="">Google Play</span>
-    <a class="footer-badge" href="https://github.com/miagpt/game" rel="noopener"><img src="assets/img/brands/github.svg" width="18" height="18" alt="">GitHub</a>
-    <a class="footer-badge footer-badge--ai" href="covers.html"><img src="assets/img/brands/mangpt.svg" width="18" height="18" alt="">MangPT AI</a>
-  </div>
-</footer>
-
-<script type="module" src="assets/js/site.js"></script>
+    <footer class="footer"><span>HAPPY HOME <i>·</i> СДЕЛАНО С ТЕПЛОМ</span><span>Без регистрации · без рекламы · работает в браузере</span></footer>
+  </main>
+  <script type="module" src="happy-home/app.js"></script>
 </body>
 </html>

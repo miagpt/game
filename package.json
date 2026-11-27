@@ -1,9 +1,9 @@
 {
-  "name": "porshik-flying-cat",
-  "version": "2.0.0",
+  "name": "happy-home-family-game",
+  "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Поршик 2.0 — кот, который летает. Тёплая браузерная игра на HTML Canvas без сборки и зависимостей. Special gift for Egor and Liza.",
+  "description": "Happy Home — семейная браузерная игра на Canvas: 5 героев, 50 раундов, без установки, аккаунта и рекламы.",
   "engines": {
     "node": ">=18"
   },
@@ -12,18 +12,17 @@
     "test": "node --test tools/*.test.mjs && node tools/site-check.mjs",
     "test:unit": "node --test tools/*.test.mjs",
     "test:site": "node tools/site-check.mjs",
-    "test:e2e": "node tools/e2e.mjs",
+    "test:e2e": "node tools/e2e.mjs && node tools/happyhome-e2e.mjs && node tools/happyhome-boss-e2e.mjs",
     "build": "node tools/build-site.mjs",
     "covers": "node tools/covers.mjs"
   },
   "keywords": [
     "game",
     "canvas",
-    "flappy",
     "html5",
-    "no-dependencies",
-    "cat",
-    "porshik"
+    "family",
+    "mobile",
+    "no-dependencies"
   ],
   "license": "MIT"
 }

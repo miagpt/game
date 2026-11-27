@@ -779,14 +779,14 @@ test('в меню и письме есть версия 2.0 и подарок', 
   assert.match(play, /id="giftTitle"[^>]*>Егору и Лизе</, 'нет заголовка подарка');
 });
 
-test('подарок описан в дневнике и в лендинге', async () => {
+test('корневая страница запускает Happy Home, legacy-дневник сохранён', async () => {
   const fs = await import('node:fs/promises');
   const love = await fs.readFile(new URL('../love.html', import.meta.url), 'utf8');
   const index = await fs.readFile(new URL('../index.html', import.meta.url), 'utf8');
   assert.match(love, /id="giftCard"/);
-  assert.match(index, /hero-gift/);
-  assert.match(index, /Егору и Лизе/);
-  assert.match(index, /Special gift/);
+  assert.match(index, /Happy Home/);
+  assert.match(index, /id="chapterGrid"/);
+  assert.match(index, /happy-home\/app\.js/);
 });
 
 test('OG-превью и полноразмерные обложки нужных размеров', async () => {
@@ -814,7 +814,7 @@ test('OG-превью и полноразмерные обложки нужны�
   }
 });
 
-test('сервис-воркер кэширует обложки и новую страницу', async () => {
+test('сервис-воркер кэширует страницы Happy Home, портреты и старые страницы', async () => {
   const fs = await import('node:fs/promises');
   const sw = await fs.readFile(new URL('../sw.js', import.meta.url), 'utf8');
   assert.match(sw, /covers\.html/);
@@ -822,6 +822,12 @@ test('сервис-воркер кэширует обложки и новую с
   assert.match(sw, /covers-page\.js/);
   assert.match(sw, /og-cover\.jpg/);
   assert.match(sw, /mangpt\.svg/);
-  const version = sw.match(/porshik-v(\d+)/);
-  assert.ok(version && Number(version[1]) >= 4, 'версию кэша нужно поднять');
+  assert.match(sw, /happy-home\/index\.html/);
+  assert.match(sw, /assets\/img\/happyhome-icon\.svg/);
+  assert.match(sw, /portraits\/liza\.webp/);
+  assert.match(sw, /webp/);
+  assert.match(sw, /happy-home\/mechanics\.js/);
+  assert.match(sw, /happy-home\/save\.js/);
+  const version = sw.match(/happyhome-v(\d+)/);
+  assert.ok(version && Number(version[1]) >= 3, 'версии кэша нужно меняться после обновления Happy Home');
 });
