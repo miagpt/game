@@ -23,7 +23,9 @@ Happy Home открывается с корневой страницы и во �
 
 Дополнительная ревизия исправила precache-модули service worker (v3), сохранение при возврате на карту, доступные имена игровых аудиопереключателей и орбитальный/целевой порядок некоторых механик.
 
-Это ещё не подтверждённый публичный релиз: физический iPhone/Safari не проверен, а GitHub Pages deployment и production URL пока не подтверждены. Canvas E2E использует browser-free DOM/Canvas mocks и не равен настоящей раскладке или физическому устройству; перед объявлением релиза нужен ручной iPhone плейтест и успешный Pages deployment.
+**Релиз опубликован:** [Открыть Happy Home](https://miagpt.github.io/game/). PR [#6](https://github.com/miagpt/game/pull/6) объединён в `main`; GitHub Pages deployment завершился успешно (run [46078281835](https://github.com/miagpt/game/actions/runs/46078281835)). CI `Tests` на `main` также прошёл.
+
+Физический iPhone/Safari агентом не проверен; пользовательский плейтест остаётся важной ручной проверкой. Canvas E2E использует browser-free DOM/Canvas mocks и не равен настоящей раскладке или физическому устройству.
 
 ## Проверки и сборка
 
