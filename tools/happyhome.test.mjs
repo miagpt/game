@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, access } from 'node:fs/promises';
 import { levels, getRound, durationLabel } from '../happy-home/content.js';
-import { PATTERN_RULES, getPatternRule, laneFraction, getBossTargetFraction, getBossPhaseCue } from '../happy-home/mechanics.js';
+import { PATTERN_RULES, getPatternRule, laneFraction, getBossTargetFraction, getBossPhaseCue, getCollectibleTargetFraction } from '../happy-home/mechanics.js';
 import { freshSave, normalizeSave } from '../happy-home/save.js';
 
 test('Happy Home has 5 age-ordered chapters and exactly 50 distinct rounds', () => {
@@ -31,6 +31,9 @@ test('all 50 named patterns map to executable gameplay rules', () => {
   assert.equal(laneFraction('room-shift', 0, 0, 30), .72);
   assert.ok(PATTERN_RULES['ring-switches'].ring);
   assert.ok(PATTERN_RULES['rolling-ball'].hazards.includes('rolling-ball'));
+  assert.deepEqual([0, 1, 2, 3].map((collected) => getCollectibleTargetFraction('star-order', collected)), [.22, .5, .78, .22]);
+  assert.ok(getCollectibleTargetFraction('family-collection', 0, 0) < .4);
+  assert.ok(getCollectibleTargetFraction('family-collection', 1, 1) > .75);
   assert.deepEqual([0,1,2].map((phase) => getBossTargetFraction('orbital', phase)), [.2,.5,.8]);
   for (const boss of ['yarn','wind','balloon','orbital','replay','home']) {
     assert.equal(new Set([0,1,2].map((phase) => getBossPhaseCue(boss, phase))).size, 3, `${boss} needs three distinct phase cues`);

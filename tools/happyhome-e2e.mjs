@@ -66,7 +66,14 @@ doc.getElementById('sfxBtn').click();
 check(doc.getElementById('gameSfxBtn').getAttribute('aria-pressed') === 'true', 'sound toggle state should sync in-game');
 doc.getElementById('musicBtn').click();
 check(doc.getElementById('gameMusicBtn').getAttribute('aria-pressed') === 'true', 'music toggle state should sync in-game');
+check(doc.getElementById('gameMusicBtn').getAttribute('aria-label') === 'Выключить музыку', 'in-game music toggle should expose its current action to assistive technology');
 doc.getElementById('musicBtn').click();
+const beforeMap = JSON.parse(window.localStorage.getItem('happyhome.save.v1')).checkpoint.elapsed;
+doc.getElementById('backMapBtn').click();
+const afterMap = JSON.parse(window.localStorage.getItem('happyhome.save.v1')).checkpoint;
+check(afterMap.id === 1 && afterMap.elapsed >= beforeMap, 'returning to the map should save the current checkpoint');
+doc.getElementById('continueBtn').click();
+check(JSON.parse(window.localStorage.getItem('happyhome.save.v1')).checkpoint.elapsed >= beforeMap, 'continuing after returning to the map should restore progress');
 let extraFrames = 0;
 for (let i = 0; i < 3100 && doc.getElementById('resultOverlay').hidden; i++) { if (i % 10 === 0) doc.getElementById('gameCanvas').dispatchEvent(new window.Event('pointerdown', { bubbles: true, cancelable: true })); const current = frames.splice(0); now += 40; for (const cb of current) { cb(now); extraFrames++; } }
 check(!doc.getElementById('resultOverlay').hidden, 'round one should reach its result screen');

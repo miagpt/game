@@ -77,6 +77,10 @@ const BOSS_PHASES = Object.freeze({
 export const getPatternRule = (pattern) => PATTERN_RULES[pattern] ?? null;
 export const getBossTargetFraction = (boss, phase, fallback = 0.5) => BOSS_LANES[boss]?.[Math.max(0, Math.min(2, phase))] ?? fallback;
 export const getBossPhaseCue = (boss, phase) => BOSS_PHASES[boss]?.[Math.max(0, Math.min(2, phase))] ?? 'Продолжай маршрут';
+export const getCollectibleTargetFraction = (pattern, collected, random = 0.5) => {
+  if (pattern === 'star-order') return [0.22, 0.5, 0.78][collected % 3];
+  return 0.25 + Math.max(0, Math.min(1, random)) * 0.52;
+};
 export const laneFraction = (lane, index, progress, elapsed = 0) => {
   switch (lane) {
     case 'center': return 0.5;

@@ -1,5 +1,5 @@
 import { levels, getRound, durationLabel } from './content.js';
-import { getPatternRule, laneFraction, getBossTargetFraction, getBossPhaseCue } from './mechanics.js';
+import { getPatternRule, laneFraction, getBossTargetFraction, getBossPhaseCue, getCollectibleTargetFraction } from './mechanics.js';
 import { freshSave, normalizeSave } from './save.js';
 
 const $ = (id) => document.getElementById(id);
@@ -129,6 +129,7 @@ function currentPaw() {
   if (!stage) return null;
   const bossStart = stage.targetSeconds * .77;
   const inBoss = !!stage.boss && elapsed >= bossStart;
+  if (!inBoss && stage.pattern === 'family-collection' && collected >= 3) return null;
   const period = inBoss ? 7.8 : Math.max(4.2, stage.targetSeconds / (9 + stage.level));
   const ageInSection = inBoss ? elapsed - bossStart : elapsed;
   const local = ageInSection % period;
@@ -137,7 +138,7 @@ function currentPaw() {
   if (inBoss && getPatternRule(stage.pattern)?.boss === 'wind' && Math.abs(Math.sin(elapsed * 1.25 + stage.id)) > .72) return null;
   const targetFraction = inBoss
     ? getBossTargetFraction(getPatternRule(stage.pattern)?.boss, bossHits, .5)
-    : .25 + seeded(index + stage.id, 9) * .52;
+    : getCollectibleTargetFraction(stage.pattern, collected, seeded(index + stage.id, 9));
   return { x: width + 24 - (local / 3.4) * (width * .8), y: height * targetFraction, index, inBoss };
 }
 function activeWindStrength() {
@@ -159,10 +160,14 @@ function currentHazard() {
   if (['wind', 'ring'].includes(kind)) return null;
   const activeKind = kind === 'rolling-ball' ? 'ball' : kind;
   if (['ball', 'yarn'].includes(activeKind)) return { kind: activeKind, index, age, x: width - 20 + Math.cos(elapsed * .9) * width * .08, y: height * (.48 + Math.sin(elapsed * 1.7) * .17), r: Math.max(13, width * (activeKind === 'ball' ? .085 : .055)) };
+  if (activeKind === 'orbit') {
+    const angle = elapsed * .95 + index * 1.7;
+    return { kind: 'orbit', index, age, x: width * .58 + Math.cos(angle) * width * .2, y: height * .5 + Math.sin(angle) * height * .18, r: Math.max(11, width * .04) };
+  }
   const x = age < 0 ? width - 20 : width + 24 - Math.min(1,age/2.9)*(width*.82);
   const wave = Math.sin(elapsed*1.8+index*1.4);
   const y0 = height*(.26 + seeded(index+stage.id,31)*.48);
-  return { kind, index, age, x, y: kind==='swing'||kind==='orbit'||kind==='balloon' ? y0+wave*height*.08 : y0, r: Math.max(10,width*.035) };
+  return { kind, index, age, x, y: ['swing','balloon','leaf'].includes(kind) ? y0+wave*height*(kind === 'leaf' ? .13 : .08) : y0, r: Math.max(10,width*.035), angle: elapsed * 1.3 + index };
 }
 function flap() {
   if (gameState === 'ready') { gameState = 'playing'; lastFrame = performance.now(); $('canvasHint').style.opacity = '0'; if (save.settings.music) playMusic(); tone(440, .08); }
@@ -214,6 +219,11 @@ function update(dt) {
   const paw = currentPaw();
   if (paw && paw.index !== lastPaw && Math.abs(paw.x - px) < pr + 12 && Math.abs(y - paw.y) < pr + 16) {
     lastPaw = paw.index; collected++;
+    if (stage.pattern === 'star-order') {
+      $('gameCaption').textContent = `Звёздная последовательность: ${(collected - 1) % 3 + 1} из 3. Следующая цель подсвечена.`;
+    } else if (stage.pattern === 'family-collection') {
+      $('gameCaption').textContent = `Семейные вещи: ${Math.min(collected, 3)} из 3 собрано. Можно найти их в любом порядке.`;
+    }
     if (paw.inBoss) {
       bossHits = Math.min(3, bossHits + 1);
       const cue = bossHits < 3 ? getBossPhaseCue(getPatternRule(stage.pattern)?.boss, bossHits) : 'Фаза завершена — путь открыт';
@@ -268,7 +278,7 @@ function pauseGame() {
   if (gameState === 'playing' || gameState === 'ready') { gameState = 'paused'; cancelAnimationFrame(raf); raf = 0; persistCheckpoint(); $('pauseOverlay').hidden = false; $('resumeBtn').focus({ preventScroll: true }); stopMusic(); }
 }
 function resumeGame() { $('pauseOverlay').hidden = true; gameState = 'playing'; canvas.focus({ preventScroll: true }); lastFrame = performance.now(); if (save.settings.music) playMusic(); loop(lastFrame); }
-function returnMap() { cancelAnimationFrame(raf); raf = 0; gameState = 'menu'; $('gameScreen').hidden = true; $('homeScreen').hidden = false; $('mapSection').hidden = false; renderMap(); scrollMap(); document.querySelector('[data-chapter]')?.focus({ preventScroll: true }); if (save.settings.music) playMusic(); }
+function returnMap() { if (stage && gameState !== 'result') persistCheckpoint(); cancelAnimationFrame(raf); raf = 0; gameState = 'menu'; $('gameScreen').hidden = true; $('homeScreen').hidden = false; $('mapSection').hidden = false; renderMap(); scrollMap(); document.querySelector('[data-chapter]')?.focus({ preventScroll: true }); if (save.settings.music) playMusic(); }
 
 function drawBoss(bx, by) {
   const r = Math.max(38, height * .105), t = motionReduced() ? 0 : performance.now() / 1000;
@@ -361,10 +371,12 @@ function drawScene(t) {
       ctx.strokeStyle=hazard.kind==='beam'?'rgba(255,216,145,.62)':'rgba(144,218,229,.62)';ctx.lineWidth=hazard.kind==='beam'?7:4;ctx.beginPath();ctx.moveTo(hazard.x-18,hazard.y);ctx.lineTo(hazard.x+18,hazard.y);ctx.stroke();
     } else if (hazard.kind === 'swing') {
       ctx.strokeStyle='rgba(255,236,199,.6)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(hazard.x,h*.08);ctx.lineTo(hazard.x,hazard.y);ctx.stroke();ctx.fillStyle='#eea58a';ctx.beginPath();ctx.arc(hazard.x,hazard.y,hazard.r,0,Math.PI*2);ctx.fill();
+    } else if (hazard.kind === 'orbit') {
+      ctx.strokeStyle='rgba(240,220,170,.38)';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(width*.58,height*.5,width*.2,height*.18,0,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#f5d58d';ctx.shadowColor='#f5d58d';ctx.shadowBlur=12;ctx.beginPath();ctx.arc(hazard.x,hazard.y,hazard.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
     } else if (hazard.kind === 'flock') {
       ctx.fillStyle='#f5e4c2';for(let i=-1;i<=1;i++){ctx.beginPath();ctx.arc(hazard.x+i*hazard.r*.68,hazard.y+Math.abs(i)*5,hazard.r*.42,0,Math.PI*2);ctx.fill()}
     } else if (hazard.kind === 'spray') {
-      ctx.strokeStyle='rgba(139,216,225,.85)';ctx.lineWidth=3;for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(hazard.x,hazard.y);ctx.lineTo(hazard.x+hazard.r*1.8,hazard.y+i*hazard.r*.6);ctx.stroke()}
+      ctx.save();ctx.translate(hazard.x,hazard.y);ctx.rotate(hazard.angle);ctx.strokeStyle='rgba(139,216,225,.85)';ctx.lineWidth=3;for(let i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(hazard.r*1.8,i*hazard.r*.6);ctx.stroke()}ctx.restore();
     } else if (hazard.kind === 'ball') {
       ctx.fillStyle='#e9a1a7';ctx.beginPath();ctx.arc(hazard.x,hazard.y,hazard.r,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(255,255,255,.45)';ctx.beginPath();ctx.arc(hazard.x-hazard.r*.3,hazard.y-hazard.r*.3,hazard.r*.22,0,Math.PI*2);ctx.fill();
     } else if (hazard.kind === 'yarn') {
@@ -416,6 +428,6 @@ $('retryBtn').addEventListener('click',()=>startRound(stage.id));$('nextBtn').ad
 
 buildHeroes();renderMap();
 for(const [key,id] of [['music','musicBtn'],['sfx','sfxBtn']])toggleState($(id),key);
-for(const [key,id] of [['music','gameMusicBtn'],['sfx','gameSfxBtn']])$(id).setAttribute('aria-pressed',String(save.settings[key]));
+for(const [key,id] of [['music','gameMusicBtn'],['sfx','gameSfxBtn']])toggleState($(id),key);
 // Persisted audio preferences are restored visually, but audio is unlocked only by a user gesture.
 resizeCanvas();

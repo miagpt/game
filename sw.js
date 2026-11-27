@@ -2,7 +2,7 @@
    Стратегия: сначала сеть, при неудаче — кэш. Версию поднимать при
    изменении публикуемых файлов. */
 
-const VERSION = 'happyhome-v2';
+const VERSION = 'happyhome-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -38,6 +38,8 @@ const ASSETS = [
   './happy-home/index.html',
   './happy-home/style.css',
   './happy-home/content.js',
+  './happy-home/mechanics.js',
+  './happy-home/save.js',
   './happy-home/app.js',
   './happy-home/portraits/porshik.webp',
   './happy-home/portraits/archie.webp',

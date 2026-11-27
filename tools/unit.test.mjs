@@ -826,6 +826,8 @@ test('сервис-воркер кэширует страницы Happy Home, п
   assert.match(sw, /assets\/img\/happyhome-icon\.svg/);
   assert.match(sw, /portraits\/liza\.webp/);
   assert.match(sw, /webp/);
+  assert.match(sw, /happy-home\/mechanics\.js/);
+  assert.match(sw, /happy-home\/save\.js/);
   const version = sw.match(/happyhome-v(\d+)/);
-  assert.ok(version && Number(version[1]) >= 2, 'версии кэша нужно меняться после обновления Happy Home');
+  assert.ok(version && Number(version[1]) >= 3, 'версии кэша нужно меняться после обновления Happy Home');
 });
