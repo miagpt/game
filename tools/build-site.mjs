@@ -11,7 +11,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const out = path.join(root, 'dist');
 
 const PAGES = ['index.html', 'play.html', 'love.html', 'covers.html', '404.html', 'site.webmanifest', 'sw.js'];
-const DIRS = ['assets/css', 'assets/js', 'assets/fonts', 'assets/img', 'assets/covers'];
+const DIRS = ['assets/css', 'assets/js', 'assets/fonts', 'assets/img', 'assets/covers', 'happy-home'];
 
 await rm(out, { recursive: true, force: true });
 await mkdir(out, { recursive: true });
@@ -27,7 +27,7 @@ for (const dir of DIRS) {
 await writeFile(path.join(out, '.nojekyll'), '');
 
 /* Проверяем, что в артефакт не попали архивы, документы и тесты. */
-const forbidden = /\.(zip|md|mjs|webp)$|MASTER-CONTEXT/i;
+const forbidden = /\.(zip|md|mjs)$|MASTER-CONTEXT|\/reference\//i;
 const offenders = [];
 async function walk(dir) {
   for (const entry of await readdir(dir, { withFileTypes: true })) {

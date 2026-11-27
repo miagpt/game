@@ -55,5 +55,5 @@ const server = http.createServer(async (req, res) => {
 
 const port = Number(process.env.PORT || 8000);
 server.listen(port, '0.0.0.0', () => {
-  console.log(`Поршик летает на http://localhost:${port}  (и на 0.0.0.0:${port})`);
+  console.log(`Happy Home доступен на http://localhost:${port}  (и на 0.0.0.0:${port})`);
 });

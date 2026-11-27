@@ -10,7 +10,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const errors = [];
 const warn = [];
 
-const PAGES = ['index.html', 'play.html', 'love.html', 'covers.html', '404.html'];
+const PAGES = ['index.html', 'happy-home/index.html', 'play.html', 'love.html', 'covers.html', '404.html'];
 
 async function exists(p) {
   try {
@@ -114,7 +114,8 @@ const requiredIds = {
     'giftSign',
     'menuGift',
   ],
-  'index.html': ['main', 'worlds', 'worldGrid', 'how', 'diary'],
+  'index.html': ['app', 'homeScreen', 'mapSection', 'chapterGrid', 'gameScreen', 'continueBtn', 'musicBtn', 'sfxBtn'],
+  'happy-home/index.html': ['app', 'homeScreen', 'mapSection', 'chapterGrid', 'gameScreen', 'continueBtn', 'musicBtn', 'sfxBtn'],
   'love.html': ['main', 'noteWrap', 'letter', 'letterBlock', 'letterBody', 'progressStrip', 'giftCard', 'giftLines'],
   'covers.html': ['main', 'coverGrid', 'msgGrid', 'gallery', 'texts'],
   '404.html': ['main'],
@@ -130,12 +131,13 @@ for (const [page, ids] of Object.entries(requiredIds)) {
 /* ---------- скрипты и стили ---------- */
 
 const modules = await readdir(path.join(root, 'assets/js'));
-for (const file of modules.filter((f) => f.endsWith('.js'))) {
-  const src = await readFile(path.join(root, 'assets/js', file), 'utf8');
-  if (/console\.log\(/.test(src)) warn.push(`assets/js/${file}: console.log в продакшене`);
-  if (/\bdebugger\b/.test(src)) errors.push(`assets/js/${file}: debugger`);
+const runtimeFiles = [...modules.filter((f) => f.endsWith('.js')).map((f) => `assets/js/${f}`), 'happy-home/app.js', 'happy-home/content.js', 'happy-home/mechanics.js', 'happy-home/save.js'];
+for (const file of runtimeFiles) {
+  const src = await readFile(path.join(root, file), 'utf8');
+  if (/console\.log\(/.test(src)) warn.push(`${file}: console.log в продакшене`);
+  if (/\bdebugger\b/.test(src)) errors.push(`${file}: debugger`);
   if (/https?:\/\/(?!localhost)/.test(src) && !/miagpt\.github\.io/.test(src)) {
-    warn.push(`assets/js/${file}: упоминание внешнего URL`);
+    warn.push(`${file}: упоминание внешнего URL`);
   }
 }
 
@@ -153,6 +155,11 @@ for (const css of ['base.css', 'site.css', 'game.css', 'covers.css']) {
     }
   }
 }
+const happyCss = await readFile(path.join(root, 'happy-home/style.css'), 'utf8');
+if ((happyCss.match(/{/g) || []).length !== (happyCss.match(/}/g) || []).length) errors.push('happy-home/style.css: несбалансированные скобки');
+if (/https?:\/\//i.test(happyCss)) errors.push('happy-home/style.css: внешний ресурс');
+if (!/safe-area-inset-(?:top|left|right|bottom)/.test(happyCss)) errors.push('happy-home/style.css: не заданы отступы safe-area для iPhone');
+if (!/100dvh/.test(happyCss)) errors.push('happy-home/style.css: нет dynamic viewport fallback');
 
 /* ---------- манифест и сервис-воркер ---------- */
 
@@ -178,15 +185,19 @@ for (const page of ['index.html', 'play.html', 'love.html']) {
 
 /* ---------- совпадение миров на главной и в игре ---------- */
 
-const content = await import('../assets/js/content.js');
-const rules = await import('../assets/js/rules.js');
-const themes = await import('../assets/js/themes.js');
-if (content.LEVELS.length !== rules.ROUNDS) errors.push('ROUNDS не совпадает с числом миров');
-if (new Set(content.LEVELS.map((l) => l.world)).size !== content.LEVELS.length) errors.push('миры повторяются');
-for (const level of content.LEVELS) {
-  if (!themes.THEMES[level.world]) errors.push(`нет темы для мира ${level.world}`);
-  if (!html['index.html'].includes('worldGrid')) errors.push('index.html не строит сетку миров');
+const legacyContent = await import('../assets/js/content.js');
+const legacyRules = await import('../assets/js/rules.js');
+const legacyThemes = await import('../assets/js/themes.js');
+if (legacyContent.LEVELS.length !== legacyRules.ROUNDS) errors.push('legacy ROUNDS не совпадает с числом миров');
+if (new Set(legacyContent.LEVELS.map((l) => l.world)).size !== legacyContent.LEVELS.length) errors.push('legacy миры повторяются');
+for (const level of legacyContent.LEVELS) if (!legacyThemes.THEMES[level.world]) errors.push(`нет legacy темы для мира ${level.world}`);
+const happyContent = await import('../happy-home/content.js');
+const happyMechanics = await import('../happy-home/mechanics.js');
+if (happyContent.levels.length !== 5 || happyContent.levels.flatMap((l) => l.rounds).length !== 50) errors.push('Happy Home должна содержать 5 глав и 50 раундов');
+for (const round of happyContent.levels.flatMap((level) => level.rounds)) {
+  if (!happyMechanics.getPatternRule(round.pattern)) errors.push(`нет игрового правила для Happy Home раунда ${round.id}: ${round.pattern}`);
 }
+if (!html['index.html'].includes('chapterGrid') || !html['index.html'].includes('happy-home/app.js')) errors.push('корень сайта должен запускать Happy Home и карту глав');
 
 /* ---------- обложки и значки платформ ---------- */
 
@@ -225,11 +236,11 @@ for (const badge of ['appstore', 'googleplay', 'github', 'mangpt']) {
 }
 if (!coversPage.includes('mangpt.svg')) errors.push('covers.html: нет значка MangPT');
 
-/* версия 2.0 должна быть видна на всех «входных» страницах */
-for (const page of ['index.html', 'play.html', 'love.html', 'covers.html']) {
-  if (!/2\.0/.test(html[page] || '')) errors.push(`${page}: нет отметки версии 2.0`);
+/* Главная теперь Happy Home; старые страницы игры проверяются отдельно как legacy. */
+if (!/Happy Home/.test(html['index.html'] || '')) errors.push('index.html: нет бренда Happy Home');
+for (const page of ['play.html', 'love.html', 'covers.html']) {
+  if (!/2\.0/.test(html[page] || '')) warn.push(`${page}: осталась legacy-страница Поршика 2.0`);
 }
-if (!/Special gift for Egor and Liza/.test(html['index.html'] || '')) errors.push('index.html: нет надписи подарка');
 
 /* ---------- вес страниц ---------- */
 
@@ -260,5 +271,5 @@ if (errors.length) {
   for (const e of errors) console.error(` - ${e}`);
   process.exitCode = 1;
 } else {
-  console.log(`Site check passed: ${PAGES.length} страниц, ${Object.keys(requiredIds).length} наборов id, манифест, сервис-воркер, ${content.LEVELS.length} миров, ресурсы только локальные (assets: ${Math.round(total / 1024)} КБ).`);
+  console.log(`Site check passed: ${PAGES.length} страниц, ${Object.keys(requiredIds).length} наборов id, 5 глав / 50 раундов Happy Home, legacy-страницы, локальные ресурсы (assets: ${Math.round(total / 1024)} КБ).`);
 }

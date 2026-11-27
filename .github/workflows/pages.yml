@@ -1,4 +1,4 @@
-name: Publish Поршик to GitHub Pages
+name: Publish Happy Home to GitHub Pages
 on:
   push:
     branches: [main]
